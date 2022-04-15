@@ -2,6 +2,7 @@ package com.example.mcdonalds
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.ActionBar
 import com.example.mcdonalds.fragments.CartFragment
 import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.fragments.ScanFragment
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         //Set the first view
         FragmentUtils.changeCurrentFragment(this, homeFragment, resources.getString(R.string.home))
 
+        //Set Custom AppBar
+        setCustomAppBar()
+
     }
 
     private fun attachAllComponents(){
@@ -45,5 +49,10 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    private fun setCustomAppBar(){
+        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        supportActionBar?.setCustomView(R.layout.custom_app_bar)
     }
 }
