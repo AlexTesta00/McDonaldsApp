@@ -1,14 +1,11 @@
 package com.example.mcdonalds.utils
 
 
-import android.widget.Toolbar
-import androidx.appcompat.app.ActionBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.mcdonalds.R
-import com.example.mcdonalds.fragments.HomeFragment
 
 class FragmentUtils {
 
@@ -25,8 +22,7 @@ class FragmentUtils {
         }
 
         private fun setTitleOfToolBar(activity: AppCompatActivity, title: String) : Unit{
-            var textView = activity.findViewById<AppCompatTextView>(R.id.app_bar_title)
-            textView.text = title
+            activity.findViewById<TextView>(R.id.app_bar_title).text = title
         }
     }
 }

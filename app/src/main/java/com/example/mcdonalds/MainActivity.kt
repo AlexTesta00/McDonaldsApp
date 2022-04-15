@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity() {
         //Set Custom AppBar
         setCustomAppBar()
 
+        //Set Custom Icon in BottomNavBar
+        bottomNavigationView.itemIconTintList = null
+
     }
 
     private fun attachAllComponents(){
