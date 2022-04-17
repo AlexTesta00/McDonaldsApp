@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fab_qr"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:src="@drawable/ic_qr_code"
+    android:contentDescription="Scan Qr"
+    android:layout_gravity="bottom|end"
+    android:layout_margin="16dp"
+    android:backgroundTint="@color/green"
+    app:tint="@color/white">
+
+</com.google.android.material.floatingactionbutton.FloatingActionButton>

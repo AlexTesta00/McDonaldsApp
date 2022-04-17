@@ -12,7 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
 
     //Components
-    private lateinit var bottomNavigationView : BottomNavigationView;
+    private lateinit var bottomNavigationView : BottomNavigationView
     private val homeFragment : HomeFragment = HomeFragment()
     private val cartFragment : CartFragment = CartFragment()
     private val scanFragment : ScanFragment = ScanFragment()
@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         //Set the first view
         FragmentUtils.changeCurrentFragment(this, homeFragment, resources.getString(R.string.home))
 
+        //Set the selected item menu
+        bottomNavigationView.selectedItemId = R.id.menu_home
+
         //Set Custom AppBar
         setCustomAppBar()
 
@@ -44,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setAllListener(){
         //Bottom NavigationBar Listener
-        bottomNavigationView.setOnNavigationItemSelectedListener {
+        bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId){
                 R.id.menu_home -> FragmentUtils.changeCurrentFragment(this,homeFragment, resources.getString(R.string.home))
                 R.id.menu_cart -> FragmentUtils.changeCurrentFragment(this,cartFragment, resources.getString(R.string.carrello))
