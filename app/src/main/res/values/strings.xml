@@ -11,4 +11,6 @@
     <string name="connection_error_message">Vuoi attivarla?</string>
     <string name="confirm">Si</string>
     <string name="not_confirm">No</string>
+    <string name="mcdonald_s_logo">McDonald\'s Logo</string>
+    <string name="i_m_love_in_it">I\'m love in it</string>
 </resources>
