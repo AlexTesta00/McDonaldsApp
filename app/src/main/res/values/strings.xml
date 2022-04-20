@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name" translatable="false">McDonalds</string>
+    <string name="carrello">Carrello</string>
+    <string name="home" translatable="false">Home</string>
+    <string name="scansiona">Scansiona</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="categorie">Categorie</string>
+    <string name="prodotti">Prodotti</string>
+    <string name="connection_error">La connessione dati non è attiva</string>
+    <string name="connection_error_message">Vuoi attivarla?</string>
+    <string name="confirm">Si</string>
+    <string name="not_confirm">No</string>
+    <string name="mcdonald_s_logo">McDonald\'s Logo</string>
+    <string name="i_m_love_in_it">I\'m love in it</string>
+</resources>
