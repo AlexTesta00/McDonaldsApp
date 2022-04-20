@@ -9,6 +9,7 @@
     android:layout_gravity="bottom|end"
     android:layout_margin="16dp"
     android:backgroundTint="@color/green"
-    app:tint="@color/white">
+    app:tint="@color/white"
+    app:borderWidth="0dp">
 
 </com.google.android.material.floatingactionbutton.FloatingActionButton>

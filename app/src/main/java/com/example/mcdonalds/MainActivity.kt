@@ -3,7 +3,6 @@ package com.example.mcdonalds
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.ActionBar
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.fragments.CartFragment
 import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.fragments.ScanFragment
