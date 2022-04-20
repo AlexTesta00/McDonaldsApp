@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Media -->
+        <ImageView
+            android:id="@+id/card_menu_image"
+            android:layout_width="match_parent"
+            android:layout_height="108dp"
+            app:srcCompat="@drawable/ic_mcdonalds"
+            android:scaleType="fitCenter"
+            android:contentDescription="Panino MacDonald's"
+            />
+
+        <!-- Title, secondary and supporting text -->
+        <TextView
+            android:gravity="center"
+            android:id="@+id/card_menu_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Titolo Card"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            />
+
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>
