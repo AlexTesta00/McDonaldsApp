@@ -37,19 +37,19 @@ class SingleMcItem (
     }
 
     override fun deleteItem(item: String) {
-        if(this.isModifiable() && this.containIngredient(item)){
-            this.ingredients.removeAt(this.getItemIndex(item))
+        if(this.isModifiable() && this.containIngredient(item.lowercase())){
+            this.ingredients.removeAt(this.getItemIndex(item.lowercase()))
         }else{
             throw IllegalStateException("The item is not modifiable or the ingredient is not present")
         }
     }
 
     private fun containIngredient(item: String): Boolean {
-        return this.ingredients.stream().map { it.name }.collect(Collectors.toList()).contains(item)
+        return this.ingredients.stream().map { it.name.lowercase() }.collect(Collectors.toList()).contains(item.lowercase())
     }
 
     private fun getItemIndex(item: String) : Int{
-        return this.ingredients.stream().map { it.name }.collect(Collectors.toList()).indexOf(item)
+        return this.ingredients.stream().map { it.name.lowercase() }.collect(Collectors.toList()).indexOf(item.lowercase())
     }
 
     fun getAllIngredients() : List<Ingredient>{
@@ -57,7 +57,7 @@ class SingleMcItem (
     }
 
     fun getOnlyIngredientsName() : List<String>{
-        return this.ingredients.stream().map { it.name }.collect(Collectors.toList())
+        return this.ingredients.stream().map { it.name.lowercase() }.collect(Collectors.toList())
     }
 
     fun isModifiable() : Boolean{
@@ -67,4 +67,25 @@ class SingleMcItem (
     fun getCategory() : String{
         return this.category.name
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SingleMcItem
+
+        if (name != other.name) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+
+    override fun toString(): String {
+        return "${name.uppercase()}(image=$image, imageDescription='$imageDescription', singlePrice=$singlePrice, modifiable=$modifiable, category=$category, ingredients=$ingredients)"
+    }
+
+
 }

@@ -12,6 +12,9 @@ import com.example.mcdonalds.R
 import com.example.mcdonalds.controller.CategoryAdapter
 import com.example.mcdonalds.controller.ProductAdapter
 import com.example.mcdonalds.model.Category
+import com.example.mcdonalds.model.Ingredient
+import com.example.mcdonalds.model.McItem
+import com.example.mcdonalds.model.SingleMcItem
 import com.example.mcdonalds.utils.FragmentUtils
 
 
@@ -54,14 +57,46 @@ class HomeFragment : Fragment() {
     }
 
     private fun setProductRecyclerView(){
-        this.productAdapter = ProductAdapter(
-            arrayListOf("McChicken","McCrispy","Hamburger","BigMac", "McChicken","McCrispy","Hamburger","BigMac", "McChicken","McCrispy","Hamburger","BigMac", "McChicken","McCrispy","Hamburger","BigMac"),
-            arrayListOf(R.drawable.mcchiken, R.drawable.crispy, R.drawable.hamburger, R.drawable.bigmac, R.drawable.mcchiken, R.drawable.crispy, R.drawable.hamburger, R.drawable.bigmac, R.drawable.mcchiken, R.drawable.crispy, R.drawable.hamburger, R.drawable.bigmac, R.drawable.mcchiken, R.drawable.crispy, R.drawable.hamburger, R.drawable.bigmac))
+        this.productAdapter = ProductAdapter(this.getItems())
         this.productView.adapter = this.productAdapter
     }
 
     private fun bindComponents(activity: Activity){
         this.categoryView = activity.findViewById(R.id.rv_categories)
         this.productView = activity.findViewById(R.id.rv_products)
+    }
+
+    private fun getItems() : List<McItem>{
+        //McChiken
+        val mcChikenBread = Ingredient("Bread", 200.00f, 156)
+        val mcChikenChiken = Ingredient("Chiken", 200.00f, 200)
+        val mcChikenSalad = Ingredient("Salad", 100.00f, 100)
+        val mcChikenSauls = Ingredient("McChikenSauls", 0.50f, 45)
+
+        val mcChiken : McItem = SingleMcItem("McChiken",
+            R.drawable.mcchiken,
+            "McChikenDescription",
+            4.60,
+            true,
+            Category("Hamburger"),
+            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSalad, mcChikenSauls)
+        )
+
+        //McCrispy
+        val mcCrispy : McItem = SingleMcItem("McCrispy",
+            R.drawable.crispy,
+            "McCrispyDescription",
+            4.60,
+            true,
+            Category("Hamburger"),
+            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSalad, mcChikenSauls)
+        )
+        //BigMac
+
+        //Hamburger
+
+        //FiletFish
+
+        return listOf(mcChiken, mcCrispy)
     }
 }

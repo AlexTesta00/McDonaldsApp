@@ -45,10 +45,10 @@ class McMenu (
     }
 
     private fun itemIsPresent(item: String) : Boolean{
-        return this.singleMcItem.stream().map { it.getName() }.collect(Collectors.toList()).contains(item)
+        return this.singleMcItem.stream().map { it.getName().lowercase() }.collect(Collectors.toList()).contains(item.lowercase())
     }
 
     private fun getItemIndex(item: String) : Int {
-        return this.singleMcItem.stream().map { it.getName() }.collect(Collectors.toList()).indexOf(item)
+        return this.singleMcItem.stream().map { it.getName().lowercase() }.collect(Collectors.toList()).indexOf(item.lowercase())
     }
 }

@@ -8,8 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
+import com.example.mcdonalds.model.McItem
 
-class ProductAdapter(private var titles : List<String>, private var images : List<Int>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+class ProductAdapter(private val items : List<McItem>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -17,16 +18,17 @@ class ProductAdapter(private var titles : List<String>, private var images : Lis
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemTitle.text = titles[position]
-        holder.itemImage.setImageResource(images[position])
+        holder.itemTitle.text = items[position].getName()
+        holder.itemImage.setImageResource(items[position].getImage())
+        holder.itemImage.contentDescription = items[position].getImageDesc()
 
         holder.itemView.setOnClickListener{
-            Log.d("position", "Io sono un ${titles[holder.layoutPosition]}")
+            Log.d("position", "Io sono un ${items[holder.layoutPosition]}")
         }
     }
 
     override fun getItemCount(): Int {
-        return titles.size
+        return items.size
     }
 
 
