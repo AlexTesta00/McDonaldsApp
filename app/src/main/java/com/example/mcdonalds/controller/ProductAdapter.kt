@@ -1,16 +1,19 @@
 package com.example.mcdonalds.controller
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
+import com.example.mcdonalds.fragments.DetailsFragment
 import com.example.mcdonalds.model.McItem
+import com.example.mcdonalds.model.SingleMcItem
+import com.example.mcdonalds.utils.FragmentUtils
 
-class ProductAdapter(private val items : List<McItem>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+class ProductAdapter(private val items : List<McItem>, private val activity : AppCompatActivity) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,7 +26,7 @@ class ProductAdapter(private val items : List<McItem>) : RecyclerView.Adapter<Pr
         holder.itemImage.contentDescription = items[position].getImageDesc()
 
         holder.itemView.setOnClickListener{
-            Log.d("position", "Io sono un ${items[holder.layoutPosition]}")
+            FragmentUtils.changeCurrentFragment(activity, DetailsFragment(items[holder.layoutPosition] as SingleMcItem), items[holder.layoutPosition].getName())
         }
     }
 

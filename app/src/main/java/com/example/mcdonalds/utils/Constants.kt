@@ -6,5 +6,7 @@ class Constants {
         const val WHITE : String = "#ffffff"
         const val BLACK : String = "#000000"
         const val GREEN : String = "#264F36"
+        const val WEIGHT_UNITY = "g"
+        const val CALORIES_UNITY = "kcal"
     }
 }

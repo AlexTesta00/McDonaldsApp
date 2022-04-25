@@ -13,7 +13,9 @@ class FragmentUtils {
     companion object{
         fun changeCurrentFragment(activity: AppCompatActivity, fragment: Fragment, tag: String){
             val transaction:FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            transaction.setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
             transaction.replace(R.id.fragment_container, fragment, tag)
+            transaction.addToBackStack(tag)
             transaction.commit()
         }
 

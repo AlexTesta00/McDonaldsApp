@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setProductRecyclerView(){
-        this.productAdapter = ProductAdapter(this.getItems())
+        this.productAdapter = ProductAdapter(this.getItems(), activity as AppCompatActivity)
         this.productView.adapter = this.productAdapter
     }
 

@@ -13,4 +13,6 @@
     <string name="not_confirm">No</string>
     <string name="mcdonald_s_logo">McDonald\'s Logo</string>
     <string name="i_m_love_in_it">I\'m love in it</string>
+    <string name="aggiungi_al_carrello">Aggiungi al carrello</string>
+    <string name="aumenta_quantit">Aumenta quantità</string>
 </resources>

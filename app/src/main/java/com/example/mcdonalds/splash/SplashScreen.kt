@@ -25,7 +25,8 @@ class SplashScreen : AppCompatActivity() {
         if(Permission.checkNetworkIsEnabled(this@SplashScreen)){
             //Start MainActivity
             Handler(Looper.getMainLooper()).postDelayed({
-                startActivity(Intent(this@SplashScreen, MainActivity::class.java))}
+                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+                                                        }
                 , Constants.SPLASH_SCREEN_DURATION)
         }else{
             //If the phone is offline
@@ -40,5 +41,10 @@ class SplashScreen : AppCompatActivity() {
                 .setCancelable(false)
                 .show()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        finish()
     }
 }
