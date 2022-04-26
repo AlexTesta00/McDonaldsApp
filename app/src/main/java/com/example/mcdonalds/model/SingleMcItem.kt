@@ -68,6 +68,11 @@ class SingleMcItem (
         return this.category.name
     }
 
+
+    override fun toString(): String {
+        return "${name.uppercase()}(image=$image, imageDescription='$imageDescription', singlePrice=$singlePrice, modifiable=$modifiable, category=$category, ingredients=$ingredients)"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -75,16 +80,15 @@ class SingleMcItem (
         other as SingleMcItem
 
         if (name != other.name) return false
+        if (ingredients != other.ingredients) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return name.hashCode()
-    }
-
-    override fun toString(): String {
-        return "${name.uppercase()}(image=$image, imageDescription='$imageDescription', singlePrice=$singlePrice, modifiable=$modifiable, category=$category, ingredients=$ingredients)"
+        var result = name.hashCode()
+        result = 31 * result + ingredients.hashCode()
+        return result
     }
 
 

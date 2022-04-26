@@ -15,4 +15,6 @@
     <string name="i_m_love_in_it">I\'m love in it</string>
     <string name="aggiungi_al_carrello">Aggiungi al carrello</string>
     <string name="aumenta_quantit">Aumenta quantità</string>
+    <string name="paga">Paga</string>
+    <string name="nessun_elemento_trovato">Nessun Elemento Trovato</string>
 </resources>

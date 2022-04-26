@@ -2,10 +2,14 @@ package com.example.mcdonalds
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelStore
 import com.example.mcdonalds.fragments.CartFragment
 import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.fragments.ScanFragment
+import com.example.mcdonalds.model.ItemViewModel
 import com.example.mcdonalds.utils.FragmentUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

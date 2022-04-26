@@ -8,5 +8,7 @@ class Constants {
         const val GREEN : String = "#264F36"
         const val WEIGHT_UNITY = "g"
         const val CALORIES_UNITY = "kcal"
+        const val UNIT = 1
+        const val QUANTITY_LIMITER = 10
     }
 }
