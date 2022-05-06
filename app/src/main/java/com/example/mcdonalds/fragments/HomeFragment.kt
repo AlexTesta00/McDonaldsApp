@@ -72,6 +72,10 @@ class HomeFragment : Fragment() {
         val mcChikenChiken = Ingredient("Chiken", 200.00f, 200)
         val mcChikenSalad = Ingredient("Salad", 100.00f, 100)
         val mcChikenSauls = Ingredient("McChikenSauls", 0.50f, 45)
+        val cheddar = Ingredient("Cheddar", 10.00f, 35)
+        val bacon = Ingredient("Bacon", 10.00f, 105)
+        val cucumber = Ingredient("Cucumber", 40.00f, 30)
+        val onion = Ingredient("Onion", 30.00f, 50)
 
         val mcChiken : McItem = SingleMcItem("McChiken",
             R.drawable.mcchiken,
@@ -86,17 +90,34 @@ class HomeFragment : Fragment() {
         val mcCrispy : McItem = SingleMcItem("McCrispy",
             R.drawable.crispy,
             "McCrispyDescription",
-            4.60,
+            5.20,
             true,
             Category("Hamburger"),
-            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSalad, mcChikenSauls)
+            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSalad, mcChikenSauls, cheddar, bacon)
         )
+
         //BigMac
+        val bigMac : McItem = SingleMcItem("BigMac",
+            R.drawable.bigmac,
+            "BigMacDesc",
+            5.00,
+            true,
+            Category("Hamburger"),
+            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSalad, mcChikenSauls, cheddar, onion, cucumber)
+        )
 
         //Hamburger
+        val hamburger : McItem = SingleMcItem("Hamburger",
+            R.drawable.hamburger,
+            "Hamburger Description",
+            1.50,
+            true,
+            Category("Hamburger"),
+            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSauls, cheddar, onion, cucumber)
+        )
 
         //FiletFish
 
-        return listOf(mcChiken, mcCrispy)
+        return listOf(mcChiken, mcCrispy, bigMac, hamburger)
     }
 }

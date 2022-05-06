@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mcdonalds.MainActivity
 import com.example.mcdonalds.R
 import com.example.mcdonalds.controller.IngredientAdapter
 import com.example.mcdonalds.model.*
@@ -90,7 +91,7 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
 
                 when(direction){
                     ItemTouchHelper.LEFT -> {
-                        if(mcItem.getAllIngredients().stream().count() <= 1){
+                        if(mcItem.getAllIngredients().stream().count() <= 2){
 
                         }else{
                             val itemToDelete : String = mcItem.getAllIngredients()[position].name

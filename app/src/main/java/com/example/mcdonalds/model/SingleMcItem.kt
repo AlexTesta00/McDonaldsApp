@@ -1,11 +1,10 @@
 package com.example.mcdonalds.model
-
 import java.lang.IllegalStateException
 import java.util.*
 import java.util.stream.Collectors
 
-
 class SingleMcItem (
+
     private val name: String,
     private val image: Int,
     private val imageDescription : String,
