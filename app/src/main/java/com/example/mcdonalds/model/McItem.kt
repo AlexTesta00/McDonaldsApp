@@ -1,8 +1,10 @@
 package com.example.mcdonalds.model
 
+import android.graphics.Bitmap
+
 interface McItem {
     fun getName() : String
-    fun getImage() : Int
+    fun getImage() : String
     fun getImageDesc() : String
     fun getTotalPrice() : Double
     fun getCalories() : Int

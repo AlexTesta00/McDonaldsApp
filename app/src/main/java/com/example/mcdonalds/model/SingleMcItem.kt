@@ -1,4 +1,5 @@
 package com.example.mcdonalds.model
+import android.graphics.Bitmap
 import java.lang.IllegalStateException
 import java.util.*
 import java.util.stream.Collectors
@@ -6,10 +7,9 @@ import java.util.stream.Collectors
 class SingleMcItem (
 
     private val name: String,
-    private val image: Int,
+    private val image: String,
     private val imageDescription : String,
     private val singlePrice : Double,
-    private val modifiable : Boolean,
     private val category: Category,
     private val ingredients : MutableList<Ingredient>
 
@@ -19,7 +19,7 @@ class SingleMcItem (
         return this.name
     }
 
-    override fun getImage(): Int {
+    override fun getImage(): String {
         return this.image
     }
 
@@ -36,7 +36,7 @@ class SingleMcItem (
     }
 
     override fun deleteItem(item: String) {
-        if(this.isModifiable() && this.containIngredient(item.lowercase())){
+        if(this.containIngredient(item.lowercase())){
             this.ingredients.removeAt(this.getItemIndex(item.lowercase()))
         }else{
             throw IllegalStateException("The item is not modifiable or the ingredient is not present")
@@ -59,17 +59,13 @@ class SingleMcItem (
         return this.ingredients.stream().map { it.name.lowercase() }.collect(Collectors.toList())
     }
 
-    fun isModifiable() : Boolean{
-        return this.modifiable
-    }
-
     fun getCategory() : String{
         return this.category.name
     }
 
 
     override fun toString(): String {
-        return "${name.uppercase()}(image=$image, imageDescription='$imageDescription', singlePrice=$singlePrice, modifiable=$modifiable, category=$category, ingredients=$ingredients)"
+        return "${name.uppercase()}(image=$image, imageDescription='$imageDescription', singlePrice=$singlePrice, category=$category, ingredients=$ingredients)"
     }
 
     override fun equals(other: Any?): Boolean {

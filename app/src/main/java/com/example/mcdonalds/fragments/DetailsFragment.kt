@@ -3,7 +3,6 @@ package com.example.mcdonalds.fragments
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mcdonalds.MainActivity
 import com.example.mcdonalds.R
 import com.example.mcdonalds.controller.IngredientAdapter
 import com.example.mcdonalds.model.*
@@ -28,6 +26,7 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
     private lateinit var adapter : IngredientAdapter
     private lateinit var addQuantity : ImageView
     private lateinit var mcItemQuantity : TextView
+    private lateinit var calories : TextView
     private lateinit var removeQuantity : ImageView
     private lateinit var addToCart : Button
     private var quantity : Int = 1
@@ -57,13 +56,14 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
         this.mcItemName = activity.findViewById(R.id.txt_details_name)
         this.mcItemIngredient = activity.findViewById(R.id.lst_ingredients)
         this.addQuantity = activity.findViewById(R.id.img_add_quantity)
+        this.calories = activity.findViewById(R.id.txt_kcal)
         this.removeQuantity = activity.findViewById(R.id.img_remove_quantity)
         this.mcItemQuantity = activity.findViewById(R.id.txt_details_quantity)
         this.addToCart = activity.findViewById(R.id.btn_add_to_cart)
     }
 
     private fun initDetails() {
-        this.mcItemImage.setImageResource(this.mcItem.getImage())
+        //this.mcItemImage.setImageResource(this.mcItem.getImage())
         this.mcItemImage.contentDescription = this.mcItem.getImageDesc()
         this.mcItemName.text = this.mcItem.getName()
 
@@ -73,6 +73,9 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
 
         //Make swappable recycler view
         ItemTouchHelper(swappableRecyclerView()).attachToRecyclerView(this.mcItemIngredient)
+
+        //init calories
+        this.calories.text = this.computeCalories()
 
     }
 
@@ -91,13 +94,17 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
 
                 when(direction){
                     ItemTouchHelper.LEFT -> {
-                        if(mcItem.getAllIngredients().stream().count() <= 2){
-
-                        }else{
-                            val itemToDelete : String = mcItem.getAllIngredients()[position].name
+                        val item : Ingredient = mcItem.getAllIngredients()[position]
+                        val itemToDelete : String = mcItem.getAllIngredients()[position].name
+                        if(item.modifiable){
                             mcItem.deleteItem(itemToDelete)
                             adapter.notifyItemRemoved(position)
                             Snackbar.make(mcItemIngredient, "$itemToDelete è stato cancellato", Snackbar.LENGTH_SHORT).show()
+                            calories.text = computeCalories()
+                        }else{
+                            displayErrorMessage(requireContext())
+                            adapter.notifyDataSetChanged()
+                            Snackbar.make(mcItemIngredient, "Non puoi cancellare questo ingrediente", Snackbar.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -132,12 +139,15 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
     //Display Error message because all ingredients are cancel
     private fun displayErrorMessage(context: Context){
         androidx.appcompat.app.AlertDialog.Builder(context)
-            .setTitle("Ingredienti")
-            .setMessage("Non puoi eliminare tutti gli ingredienti")
-            .setIcon(R.drawable.ic_not_signals)
+            .setTitle("Non puoi eliminare questo ingrediente")
+            .setMessage("Questo ingrediente è fondamentale per la costruzione del panino, non puoi eliminarlo")
             .setPositiveButton("Ho capito"){ _, _ -> }
             .setCancelable(false)
             .show()
     }
 
+    //Refresh Calories when item are deleted
+    fun computeCalories() : String{
+        return this.mcItem.getCalories().toString() + Constants.CALORIES_UNITY
+    }
 }

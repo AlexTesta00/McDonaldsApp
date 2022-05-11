@@ -22,7 +22,7 @@ class ProductAdapter(private val items : List<McItem>, private val activity : Ap
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemTitle.text = items[position].getName()
-        holder.itemImage.setImageResource(items[position].getImage())
+        //holder.itemImage.setImageResource(items[position].getImage())
         holder.itemImage.contentDescription = items[position].getImageDesc()
 
         holder.itemView.setOnClickListener{

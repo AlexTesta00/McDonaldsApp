@@ -2,6 +2,8 @@ package com.example.mcdonalds.utils
 
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment

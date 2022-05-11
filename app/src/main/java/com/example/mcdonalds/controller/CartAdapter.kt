@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
 import com.example.mcdonalds.model.McItem
+import com.google.common.io.Resources.getResource
 import java.util.stream.Collectors
 
 class CartAdapter(private val mcItem: MutableMap<McItem, Int>) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
@@ -19,7 +20,9 @@ class CartAdapter(private val mcItem: MutableMap<McItem, Int>) : RecyclerView.Ad
     override fun onBindViewHolder(holder: CartAdapter.ViewHolder, position: Int) {
         holder.title.text = mcItem.keys.stream().map { it.getName() }.collect(Collectors.toList())[position]
         holder.ingredients.text = "Ingredienti"
-        holder.image.setImageResource(mcItem.keys.stream().map { it.getImage() }.collect(Collectors.toList())[position])
+        /*
+        holder.image.setImageURI(getResource(mcItem.keys.stream().map { it.getImage() }.collect(Collectors.toList())[position]))
+        */
     }
 
     override fun getItemCount(): Int {
