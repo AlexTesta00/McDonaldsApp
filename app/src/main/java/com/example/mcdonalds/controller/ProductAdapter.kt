@@ -1,5 +1,7 @@
 package com.example.mcdonalds.controller
 
+
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +24,7 @@ class ProductAdapter(private val items : List<McItem>, private val activity : Ap
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemTitle.text = items[position].getName()
-        //holder.itemImage.setImageResource(items[position].getImage())
+        //holder.itemImage.setImageURI(Uri.parse("android.resource://com.example.mcdonald/drawable/${items[position].getImage()}"))
         holder.itemImage.contentDescription = items[position].getImageDesc()
 
         holder.itemView.setOnClickListener{

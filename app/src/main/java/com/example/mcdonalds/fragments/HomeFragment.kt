@@ -17,6 +17,7 @@ import com.example.mcdonalds.model.Ingredient
 import com.example.mcdonalds.model.McItem
 import com.example.mcdonalds.model.SingleMcItem
 import com.example.mcdonalds.utils.FragmentUtils
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -34,8 +35,8 @@ class HomeFragment : Fragment() {
 
         if(activity != null){
             this.bindComponents(activity as AppCompatActivity)
-            //this.getItems("Hamburger")
-            this.getAllItems("Hamburger")
+            this.getAllCategories()
+            this.getItems()
             FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
         }
     }
@@ -54,12 +55,10 @@ class HomeFragment : Fragment() {
         this.categoryView.adapter = categoryAdapter
     }
 
-    /*
-    private fun setProductRecyclerView(){
-        this.productAdapter = ProductAdapter(this.getItems(), activity as AppCompatActivity)
+    private fun setProductRecyclerView(items : MutableList<SingleMcItem>){
+        this.productAdapter = ProductAdapter(items, activity as AppCompatActivity)
         this.productView.adapter = this.productAdapter
     }
-    */
 
     private fun bindComponents(activity: Activity){
         this.categoryView = activity.findViewById(R.id.rv_categories)
@@ -120,28 +119,36 @@ class HomeFragment : Fragment() {
     }
     */
 
-    /*
-    private fun getItems(category : String) : List<McItem>{
+    private fun getItems() : List<McItem>{
         val db = Firebase.firestore
-        var item : MutableList<SingleMcItem> = mutableListOf()
-        db.document("category/$category")
-            .collection(category)
+        var items : MutableList<SingleMcItem> = mutableListOf()
+        db.collection("item")
             .get()
             .addOnSuccessListener{
                 for(document in it){
-                    Log.d("database", "Ciao");
+                    val name : String = document["name"] as String
+                    val image : String = document["image"] as String
+                    val imageDecription : String = document["imageDescription"] as String
+                    val singlePrice : Double = document["singlePrice"] as Double
+                    val category = document["category"] as DocumentReference
+
+
+                    //Ingredients
+                    items.add(SingleMcItem(name,image,imageDecription,singlePrice,Category(category.id), mutableListOf(Ingredient("Chiken", 0, false, 20f, 200))))
+                    Log.d("base", "${items}")
                 }
             }
             .addOnCompleteListener{
-
+                this.setProductRecyclerView(items)
             }
             .addOnFailureListener{
 
             }
         return listOf()
     }
-    */
-    private fun getAllItems(category : String) {
+
+
+    private fun getAllCategories() {
         val db = Firebase.firestore
         val categories : MutableList<Category> = mutableListOf()
         db.collection("category")
@@ -149,7 +156,7 @@ class HomeFragment : Fragment() {
             .addOnSuccessListener {
                 for (document in it){
                     categories.add(Category(document.id))
-                    //Log.d("base", "${document.id}")
+                    Log.d("base", "${document.id}")
                 }
             }
             .addOnFailureListener{
