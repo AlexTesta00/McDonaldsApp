@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/img_details"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         android:contentDescription="Image Description"
         android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lst_ingredients"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="200dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"

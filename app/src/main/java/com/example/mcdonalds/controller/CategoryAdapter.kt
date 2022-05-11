@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
+import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.model.Category
 import com.example.mcdonalds.utils.Constants
 

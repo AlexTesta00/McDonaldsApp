@@ -16,10 +16,12 @@ import com.example.mcdonalds.model.Category
 import com.example.mcdonalds.model.Ingredient
 import com.example.mcdonalds.model.McItem
 import com.example.mcdonalds.model.SingleMcItem
+import com.example.mcdonalds.utils.Constants
 import com.example.mcdonalds.utils.FragmentUtils
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.ArrayList
 
 
 class HomeFragment : Fragment() {
@@ -28,7 +30,6 @@ class HomeFragment : Fragment() {
     private lateinit var categoryView : RecyclerView
     private lateinit var productAdapter: ProductAdapter
     private lateinit var categoryAdapter: CategoryAdapter
-    private lateinit var database : Firebase
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,7 +37,7 @@ class HomeFragment : Fragment() {
         if(activity != null){
             this.bindComponents(activity as AppCompatActivity)
             this.getAllCategories()
-            this.getItems()
+            this.getItems(Constants.currentCategory)
             FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
         }
     }
@@ -65,77 +66,49 @@ class HomeFragment : Fragment() {
         this.productView = activity.findViewById(R.id.rv_products)
     }
 
-    /*
-    private fun getItems(category : String) : List<McItem>{
-        /*
-        //McChiken
-        val mcChikenBread = Ingredient("Bread",R.drawable.bread,false, 200.00f, 156)
-        val mcChikenChiken = Ingredient("Chiken",R.drawable.chiken,false, 200.00f, 200)
-        val mcChikenSalad = Ingredient("Salad",R.drawable.salad,true, 100.00f, 100)
-        val mcChikenSauls = Ingredient("McChikenSauls",R.drawable.salad,true, 0.50f, 45)
-        val cheddar = Ingredient("Cheddar",R.drawable.cheddar,true, 10.00f, 35)
-        val bacon = Ingredient("Bacon",R.drawable.bacon,true, 10.00f, 105)
-        val cucumber = Ingredient("Cucumber",R.drawable.cucumber,true, 40.00f, 30)
-        val onion = Ingredient("Onion",R.drawable.onion,true, 30.00f, 50)
-
-        val mcChiken : McItem = SingleMcItem("McChiken",
-            R.drawable.mcchiken,
-            "McChikenDescription",
-            4.60,
-            Category("Hamburger"),
-            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSalad, mcChikenSauls)
-        )
-
-        //McCrispy
-        val mcCrispy : McItem = SingleMcItem("McCrispy",
-            R.drawable.crispy,
-            "McCrispyDescription",
-            5.20,
-            Category("Hamburger"),
-            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSalad, mcChikenSauls, cheddar, bacon)
-        )
-
-        //BigMac
-        val bigMac : McItem = SingleMcItem("BigMac",
-            R.drawable.bigmac,
-            "BigMacDesc",
-            5.00,
-            Category("Hamburger"),
-            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSalad, mcChikenSauls, cheddar, onion, cucumber)
-        )
-
-        //Hamburger
-        val hamburger : McItem = SingleMcItem("Hamburger",
-            R.drawable.hamburger,
-            "Hamburger Description",
-            1.50,
-            Category("Hamburger"),
-            mutableListOf(mcChikenBread, mcChikenChiken, mcChikenSauls, cheddar, onion, cucumber)
-        )
-        */
-        //FiletFish
-
-        return listOf()//listOf(mcChiken, mcCrispy, bigMac, hamburger)
-    }
-    */
-
-    private fun getItems() : List<McItem>{
+    private fun getItems(selectedCategory : String) : List<McItem>{
         val db = Firebase.firestore
-        var items : MutableList<SingleMcItem> = mutableListOf()
+        val items : MutableList<SingleMcItem> = mutableListOf()
         db.collection("item")
             .get()
             .addOnSuccessListener{
                 for(document in it){
-                    val name : String = document["name"] as String
-                    val image : String = document["image"] as String
-                    val imageDecription : String = document["imageDescription"] as String
-                    val singlePrice : Double = document["singlePrice"] as Double
-                    val category = document["category"] as DocumentReference
+                    val pseudoCategory = document["category"] as DocumentReference
+                    val category = Category(pseudoCategory.id)
 
+                    if (category.name == selectedCategory) {
 
+                        //SingleMcItem Attribute
+                        val ingredientsItem = document["ingredients"] as ArrayList<DocumentReference>
+                        val ingredients : MutableList<Ingredient> = mutableListOf()
+                        val name : String = document["name"] as String
+                        val image : String = document["image"] as String
+                        val imageDescription : String = document["imageDescription"] as String
+                        val singlePrice : Double = document["singlePrice"] as Double
+
+                        //Recover All Ingredient
+                        for(ingredient in ingredientsItem){
+                            //Recover Ingredient and Add on Ingredients list
+                            db.document(ingredient.path)
+                                .get()
+                                .addOnSuccessListener{ currentItem ->
+                                    val weight = (currentItem["weight"] as Long).toFloat()
+                                    val name = currentItem["name"] as String
+                                    val image = currentItem["image"] as String
+                                    val calories = (currentItem["calories"] as Long).toInt()
+                                    var modifiable = (currentItem["modifiable"] as Boolean?)
+                                    if(modifiable == null){
+                                        modifiable = false
+                                    }
+                                    ingredients.add(Ingredient(name,image,modifiable,weight,calories))
+                                }
+                        }
+
+                        //Add Ingredients On List
+                        items.add(SingleMcItem(name, image, imageDescription, singlePrice, category, ingredients))
+                    }
                     //Ingredients
-                    items.add(SingleMcItem(name,image,imageDecription,singlePrice,Category(category.id), mutableListOf(Ingredient("Chiken", 0, false, 20f, 200))))
-                    Log.d("base", "${items}")
+                    //Log.d("base", "$items")
                 }
             }
             .addOnCompleteListener{
@@ -147,7 +120,6 @@ class HomeFragment : Fragment() {
         return listOf()
     }
 
-
     private fun getAllCategories() {
         val db = Firebase.firestore
         val categories : MutableList<Category> = mutableListOf()
@@ -156,7 +128,6 @@ class HomeFragment : Fragment() {
             .addOnSuccessListener {
                 for (document in it){
                     categories.add(Category(document.id))
-                    Log.d("base", "${document.id}")
                 }
             }
             .addOnFailureListener{

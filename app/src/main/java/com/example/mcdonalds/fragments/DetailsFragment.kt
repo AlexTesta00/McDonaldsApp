@@ -36,7 +36,7 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
 
         if(activity != null){
             bindComponents(activity as AppCompatActivity)
-            this.initDetails()
+            this.initDetails(activity as AppCompatActivity)
             FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
             this.setAllListener()
         }
@@ -62,13 +62,15 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
         this.addToCart = activity.findViewById(R.id.btn_add_to_cart)
     }
 
-    private fun initDetails() {
-        //this.mcItemImage.setImageResource(this.mcItem.getImage())
+    private fun initDetails(activity: AppCompatActivity) {
+        val resourceString = "@drawable/${this.mcItem.getImage()}"
+        val resourcesId = activity.resources.getIdentifier(resourceString, "drawable", activity.packageName)
+        this.mcItemImage.setImageResource(resourcesId)
         this.mcItemImage.contentDescription = this.mcItem.getImageDesc()
         this.mcItemName.text = this.mcItem.getName()
 
         //init ingredients
-        this.adapter = IngredientAdapter(this.mcItem.getAllIngredients())
+        this.adapter = IngredientAdapter(this.mcItem.getAllIngredients(), activity as AppCompatActivity)
         this.mcItemIngredient.adapter = this.adapter
 
         //Make swappable recycler view
