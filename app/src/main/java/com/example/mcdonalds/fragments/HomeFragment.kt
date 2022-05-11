@@ -138,4 +138,14 @@ class HomeFragment : Fragment() {
                 this.setCategoryRecyclerView(categories)
             }
     }
+
+    override fun onResume() {
+        super.onResume()
+        if(activity != null){
+            this.bindComponents(activity as AppCompatActivity)
+            this.getAllCategories()
+            this.getItems(Constants.currentCategory)
+            FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
+        }
+    }
 }

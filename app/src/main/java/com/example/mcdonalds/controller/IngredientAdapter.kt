@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
 import com.example.mcdonalds.model.Ingredient
@@ -37,7 +36,6 @@ class IngredientAdapter(private var ingredient: List<Ingredient>, private var ac
 
 
     inner class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        var button : CardView = itemView.findViewById(R.id.btn_ingredients)
         var itemImage : ImageView = itemView.findViewById(R.id.card_ingredient_image)
         var itemName : TextView = itemView.findViewById(R.id.card_ingredient_text)
     }

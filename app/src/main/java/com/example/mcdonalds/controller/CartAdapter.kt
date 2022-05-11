@@ -5,13 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
 import com.example.mcdonalds.model.McItem
 import com.google.common.io.Resources.getResource
 import java.util.stream.Collectors
 
-class CartAdapter(private val mcItem: MutableMap<McItem, Int>) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
+class CartAdapter(private val mcItem: MutableMap<McItem, Int>, private val activity: AppCompatActivity) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.card_cart, parent, false))
@@ -20,9 +21,12 @@ class CartAdapter(private val mcItem: MutableMap<McItem, Int>) : RecyclerView.Ad
     override fun onBindViewHolder(holder: CartAdapter.ViewHolder, position: Int) {
         holder.title.text = mcItem.keys.stream().map { it.getName() }.collect(Collectors.toList())[position]
         holder.ingredients.text = "Ingredienti"
-        /*
-        holder.image.setImageURI(getResource(mcItem.keys.stream().map { it.getImage() }.collect(Collectors.toList())[position]))
-        */
+
+        //Recover Internal Image from name
+        val resourceString = "@drawable/${mcItem.keys.stream().map { it.getImage() }.collect(Collectors.toList())[position]}"
+        val resourcesId = activity.resources.getIdentifier(resourceString, "drawable", activity.packageName)
+        holder.image.setImageResource(resourcesId)
+        holder.image.contentDescription = mcItem.keys.stream().map { it.getImageDesc() }.collect(Collectors.toList())[position]
     }
 
     override fun getItemCount(): Int {

@@ -43,7 +43,7 @@ class CartFragment : Fragment() {
     private fun setCategoryRecyclerView(){
         cartView.setHasFixedSize(true)
 
-        this.cartAdapter = CartAdapter(McOrder.getAllItems())
+        this.cartAdapter = CartAdapter(McOrder.getAllItems(), activity as AppCompatActivity)
         this.cartView.adapter = cartAdapter
     }
 
