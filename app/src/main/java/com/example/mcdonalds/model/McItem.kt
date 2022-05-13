@@ -8,5 +8,8 @@ interface McItem {
     fun getImageDesc() : String
     fun getTotalPrice() : Double
     fun getCalories() : Int
+    fun getAllIngredients() : List<Ingredient>
+    fun getCategory() : String
+    fun getOnlyIngredientsName() : List<String>
     fun deleteItem(item: String)
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
 import com.example.mcdonalds.controller.CategoryAdapter
@@ -21,7 +22,9 @@ import com.example.mcdonalds.utils.FragmentUtils
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.ArrayList
+import pl.droidsonroids.gif.GifImageView
+import java.util.*
+import java.util.stream.Collectors
 
 
 class HomeFragment : Fragment() {
@@ -30,14 +33,27 @@ class HomeFragment : Fragment() {
     private lateinit var categoryView : RecyclerView
     private lateinit var productAdapter: ProductAdapter
     private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var currentCategory : Category
+    private lateinit var loadView : GifImageView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         if(activity != null){
+
+            //Bind All Components in View
             this.bindComponents(activity as AppCompatActivity)
+
+            //Set Visible Load View
+            this.loadView.isVisible = true
+
+            //Get All Categories
             this.getAllCategories()
-            this.getItems(Constants.currentCategory)
+
+            //Get All Items From Server filter by category
+            this.getItems(Constants.DEFAULT_CATEGORY)
+
+            //Change the AppBar Name
             FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
         }
     }
@@ -51,22 +67,24 @@ class HomeFragment : Fragment() {
     }
 
     private fun setCategoryRecyclerView(categories : MutableList<Category>){
-        categoryView.setHasFixedSize(true)
+        this.categoryView.setHasFixedSize(true)
         this.categoryAdapter = CategoryAdapter(categories)
         this.categoryView.adapter = categoryAdapter
     }
 
     private fun setProductRecyclerView(items : MutableList<SingleMcItem>){
+        this.productView.setHasFixedSize(true)
         this.productAdapter = ProductAdapter(items, activity as AppCompatActivity)
         this.productView.adapter = this.productAdapter
     }
 
     private fun bindComponents(activity: Activity){
+        this.loadView = activity.findViewById(R.id.load)
         this.categoryView = activity.findViewById(R.id.rv_categories)
         this.productView = activity.findViewById(R.id.rv_products)
     }
 
-    private fun getItems(selectedCategory : String) : List<McItem>{
+    private fun getItems(selectedCategory : String) {
         val db = Firebase.firestore
         val items : MutableList<SingleMcItem> = mutableListOf()
         db.collection("item")
@@ -76,7 +94,9 @@ class HomeFragment : Fragment() {
                     val pseudoCategory = document["category"] as DocumentReference
                     val category = Category(pseudoCategory.id)
 
-                    if (category.name == selectedCategory) {
+                    val onlyName = items.stream().map { item -> item.getName() }.collect(Collectors.toList())
+
+                    if (category.name == selectedCategory && !onlyName.contains(document["name"] as String)) {
 
                         //SingleMcItem Attribute
                         val ingredientsItem = document["ingredients"] as ArrayList<DocumentReference>
@@ -107,17 +127,16 @@ class HomeFragment : Fragment() {
                         //Add Ingredients On List
                         items.add(SingleMcItem(name, image, imageDescription, singlePrice, category, ingredients))
                     }
-                    //Ingredients
-                    //Log.d("base", "$items")
                 }
             }
             .addOnCompleteListener{
                 this.setProductRecyclerView(items)
+                this.loadView.isVisible = false
+                Log.d("visibility", this.loadView.visibility.toString())
             }
             .addOnFailureListener{
 
             }
-        return listOf()
     }
 
     private fun getAllCategories() {
@@ -144,7 +163,7 @@ class HomeFragment : Fragment() {
         if(activity != null){
             this.bindComponents(activity as AppCompatActivity)
             this.getAllCategories()
-            this.getItems(Constants.currentCategory)
+            this.getItems(Constants.DEFAULT_CATEGORY)
             FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
         }
     }

@@ -43,6 +43,10 @@ class SingleMcItem (
         }
     }
 
+    override fun getAllIngredients() : List<Ingredient>{
+        return Collections.unmodifiableList(this.ingredients)
+    }
+
     private fun containIngredient(item: String): Boolean {
         return this.ingredients.stream().map { it.name.lowercase() }.collect(Collectors.toList()).contains(item.lowercase())
     }
@@ -51,15 +55,11 @@ class SingleMcItem (
         return this.ingredients.stream().map { it.name.lowercase() }.collect(Collectors.toList()).indexOf(item.lowercase())
     }
 
-    fun getAllIngredients() : List<Ingredient>{
-        return Collections.unmodifiableList(this.ingredients)
-    }
-
-    fun getOnlyIngredientsName() : List<String>{
+    override fun getOnlyIngredientsName() : List<String>{
         return this.ingredients.stream().map { it.name.lowercase() }.collect(Collectors.toList())
     }
 
-    fun getCategory() : String{
+    override fun getCategory() : String{
         return this.category.name
     }
 

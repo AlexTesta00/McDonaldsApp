@@ -20,7 +20,7 @@ class CartAdapter(private val mcItem: MutableMap<McItem, Int>, private val activ
 
     override fun onBindViewHolder(holder: CartAdapter.ViewHolder, position: Int) {
         holder.title.text = mcItem.keys.stream().map { it.getName() }.collect(Collectors.toList())[position]
-        holder.ingredients.text = "Ingredienti"
+        holder.ingredients.text = mcItem.keys.stream().map { it.getOnlyIngredientsName() }.collect(Collectors.toList())[position].toString()
 
         //Recover Internal Image from name
         val resourceString = "@drawable/${mcItem.keys.stream().map { it.getImage() }.collect(Collectors.toList())[position]}"

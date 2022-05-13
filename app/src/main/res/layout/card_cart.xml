@@ -17,11 +17,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:textColor="@color/black"
         android:id="@+id/txt_title_cart"
         android:layout_width="236dp"
         android:layout_height="39dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="30dp"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_card_cart"
@@ -33,7 +34,7 @@
         android:layout_width="236dp"
         android:layout_height="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_card_cart"
         app:layout_constraintTop_toBottomOf="@+id/txt_title_cart" />

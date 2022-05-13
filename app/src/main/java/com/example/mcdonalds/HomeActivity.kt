@@ -1,22 +1,22 @@
 package com.example.mcdonalds
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.ActionBar
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelStore
 import com.example.mcdonalds.fragments.CartFragment
 import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.fragments.ScanFragment
-import com.example.mcdonalds.model.ItemViewModel
 import com.example.mcdonalds.utils.FragmentUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
-class MainActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
 
     //Components
     private lateinit var bottomNavigationView : BottomNavigationView
+    private lateinit var firebaseAuth: FirebaseAuth
     private val homeFragment : HomeFragment = HomeFragment()
     private val cartFragment : CartFragment = CartFragment()
     private val scanFragment : ScanFragment = ScanFragment()
@@ -24,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //Check if User are auth
+        firebaseAuth = FirebaseAuth.getInstance()
+        checkUser()
 
         //Attach view components
         attachAllComponents()
@@ -45,6 +49,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun checkUser(){
+        val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
+        if(firebaseUser != null){
+            startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+            finish()
+        }else{
+            //TODO(set current user)
+        }
+    }
+
     private fun attachAllComponents(){
         bottomNavigationView = findViewById(R.id.bottom_navigation_menu)
     }
@@ -55,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.menu_home -> FragmentUtils.changeCurrentFragment(this,homeFragment, resources.getString(R.string.home))
                 R.id.menu_cart -> FragmentUtils.changeCurrentFragment(this,cartFragment, resources.getString(R.string.carrello))
-                R.id.menu_qr_code -> FragmentUtils.changeCurrentFragment(this,scanFragment, resources.getString(R.string.scansiona))
+                R.id.menu_qr_code -> FragmentUtils.changeCurrentFragment(this,scanFragment, resources.getString(R.string.storico))
             }
             true
         }

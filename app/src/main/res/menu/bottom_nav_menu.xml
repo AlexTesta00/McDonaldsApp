@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/menu_qr_code"
-        android:title="@string/scansiona"
+        android:title="@string/storico"
         android:icon="@drawable/scan_selector"
         />
 </menu>
