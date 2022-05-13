@@ -6,7 +6,7 @@ interface Order {
     fun getAllItems() : MutableMap<McItem, Int>
     fun getTotalPrice() : Double
     fun getTotalCalories() : Int
-    fun getUserInfo() : User
+    fun getUserInfo() : Map<String,String>
     fun getLocationInfo() : Location
     fun addItem(vararg item: McItem)
     fun deleteItem(vararg item: String)

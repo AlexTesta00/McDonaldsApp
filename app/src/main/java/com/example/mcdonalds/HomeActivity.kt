@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBar
 import com.example.mcdonalds.fragments.CartFragment
 import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.fragments.ScanFragment
+import com.example.mcdonalds.model.McOrder
 import com.example.mcdonalds.utils.FragmentUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -51,11 +52,11 @@ class HomeActivity : AppCompatActivity() {
 
     private fun checkUser(){
         val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
-        if(firebaseUser != null){
+        if(firebaseUser == null){
             startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
             finish()
         }else{
-            //TODO(set current user)
+            //Set current user
         }
     }
 

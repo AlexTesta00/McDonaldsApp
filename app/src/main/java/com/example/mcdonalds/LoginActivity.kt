@@ -5,13 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.example.mcdonalds.model.McOrder
+import com.example.mcdonalds.model.McUser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import java.lang.Exception
@@ -38,9 +39,8 @@ class LoginActivity : AppCompatActivity() {
 
         //Configure GoogleSignIn
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestIdToken(getString(R.string.default_web_id))
             .requestEmail() //get user email
-            .requestId() //get user id
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this@LoginActivity, googleSignInOptions)
@@ -55,8 +55,14 @@ class LoginActivity : AppCompatActivity() {
         //Check if user is logged in
         val firebaseUser = firebaseAuth.currentUser
         if(firebaseUser != null){
-            startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
-            finish()
+
+            //Set User to order
+            McOrder(McUser(firebaseUser.email!!, firebaseUser.uid))
+
+            //Start the Home activity
+            startActivity(Intent(this, HomeActivity::class.java))
+            this.finish()
+
         }
     }
 
@@ -98,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
 
                 //Get logged User
                 val firebaseUser = firebaseAuth.currentUser
-                val uid = firebaseAuth!!.uid
+                val uid = firebaseAuth.uid
                 val email = firebaseUser!!.email
 
                 Log.d(TAG, "firAccountGoogle: Email : $email")
@@ -117,6 +123,9 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this@LoginActivity, "Bentornato, $email", Toast.LENGTH_SHORT).show()
                 }
 
+                //Set the user in current order
+                McOrder(McUser(email!!, uid!!))
+
                 //Start Main Activity
                 startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                 finish()
@@ -125,10 +134,6 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "firAccountGoogle: Loggin Failed ${it.message}")
                 Toast.makeText(this@LoginActivity, "Il login non è andato a buon fine", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
 }

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "466927468015-6q1vnj8g316fva0bgnne8lafquc76jtn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mcdonalds",
+            "certificate_hash": "25b208db2b34affae8133a0ebc8e3654738c8cfe"
+          }
+        },
+        {
           "client_id": "466927468015-i3pb8r31dt1ccimdeahv9lc8cj3j4ndt.apps.googleusercontent.com",
           "client_type": 3
         }

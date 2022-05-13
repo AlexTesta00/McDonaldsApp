@@ -1,4 +1,5 @@
 <resources>
+    <string name="default_web_id" translatable="false">466927468015-i3pb8r31dt1ccimdeahv9lc8cj3j4ndt.apps.googleusercontent.com</string>
     <string name="app_name" translatable="false">McDonalds</string>
     <string name="carrello">Carrello</string>
     <string name="home" translatable="false">Home</string>
