@@ -27,6 +27,7 @@ class CartAdapter(private val mcItem: MutableMap<McItem, Int>, private val activ
         val resourcesId = activity.resources.getIdentifier(resourceString, "drawable", activity.packageName)
         holder.image.setImageResource(resourcesId)
         holder.image.contentDescription = mcItem.keys.stream().map { it.getImageDesc() }.collect(Collectors.toList())[position]
+        holder.quatity.text = mcItem.values.stream().collect(Collectors.toList())[position].toString()
     }
 
     override fun getItemCount(): Int {
@@ -37,5 +38,6 @@ class CartAdapter(private val mcItem: MutableMap<McItem, Int>, private val activ
         val title : TextView = itemView.findViewById(R.id.txt_title_cart)
         val ingredients : TextView = itemView.findViewById(R.id.txt_ingredients_cart)
         val image : ImageView = itemView.findViewById(R.id.img_card_cart)
+        val quatity : TextView = itemView.findViewById(R.id.txt_quantity)
     }
 }

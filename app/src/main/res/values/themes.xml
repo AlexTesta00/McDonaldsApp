@@ -21,4 +21,13 @@
         <item name="colorPrimaryVariant">@color/secondary_green</item>
         <item name="colorSecondary">@color/yellow</item>
     </style>
+
+    <style name="McDonaldsTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="McDonaldsTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="McDonaldsTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

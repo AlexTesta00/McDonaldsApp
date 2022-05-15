@@ -1,10 +1,11 @@
-package com.example.mcdonalds
+package com.example.mcdonalds.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.example.mcdonalds.R
 import com.example.mcdonalds.model.McOrder
 import com.example.mcdonalds.model.McUser
 import com.google.android.gms.auth.api.signin.GoogleSignIn

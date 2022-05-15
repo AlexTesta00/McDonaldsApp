@@ -1,23 +1,27 @@
-package com.example.mcdonalds
+package com.example.mcdonalds.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.ActionBar
+import com.example.mcdonalds.R
 import com.example.mcdonalds.fragments.CartFragment
 import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.fragments.ScanFragment
-import com.example.mcdonalds.model.McOrder
 import com.example.mcdonalds.utils.FragmentUtils
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(){
 
     //Components
     private lateinit var bottomNavigationView : BottomNavigationView
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var maps : GoogleMap
     private val homeFragment : HomeFragment = HomeFragment()
     private val cartFragment : CartFragment = CartFragment()
     private val scanFragment : ScanFragment = ScanFragment()
@@ -47,7 +51,6 @@ class HomeActivity : AppCompatActivity() {
 
         //Set Custom Icon in BottomNavBar
         bottomNavigationView.itemIconTintList = null
-
     }
 
     private fun checkUser(){
@@ -68,9 +71,15 @@ class HomeActivity : AppCompatActivity() {
         //Bottom NavigationBar Listener
         bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId){
-                R.id.menu_home -> FragmentUtils.changeCurrentFragment(this,homeFragment, resources.getString(R.string.home))
-                R.id.menu_cart -> FragmentUtils.changeCurrentFragment(this,cartFragment, resources.getString(R.string.carrello))
-                R.id.menu_qr_code -> FragmentUtils.changeCurrentFragment(this,scanFragment, resources.getString(R.string.storico))
+                R.id.menu_home -> FragmentUtils.changeCurrentFragment(this,homeFragment, resources.getString(
+                    R.string.home
+                ))
+                R.id.menu_cart -> FragmentUtils.changeCurrentFragment(this,cartFragment, resources.getString(
+                    R.string.carrello
+                ))
+                R.id.menu_qr_code -> FragmentUtils.changeCurrentFragment(this,scanFragment, resources.getString(
+                    R.string.storico
+                ))
             }
             true
         }
