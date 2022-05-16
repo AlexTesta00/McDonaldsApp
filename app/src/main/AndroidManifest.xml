@@ -4,6 +4,7 @@
 
     <uses-feature android:name="android.hardware.location.gps" />
 
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
@@ -25,7 +26,8 @@
             android:name=".activity.MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps"
-            android:theme="@style/McDonaldsTheme"/>
+            android:theme="@style/McDonaldsTheme"
+            android:foregroundServiceType = "location"/>
         <activity
             android:name=".activity.Splash"
             android:exported="true"

@@ -1,5 +1,6 @@
 package com.example.mcdonalds.utils
 
+import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
