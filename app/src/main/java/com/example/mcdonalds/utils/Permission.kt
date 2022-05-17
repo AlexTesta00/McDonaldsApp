@@ -1,7 +1,7 @@
 package com.example.mcdonalds.utils
 
-import android.app.Activity
 import android.content.Context
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 
@@ -19,6 +19,12 @@ class Permission {
                 activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
                 else -> false
             }
+        }
+
+        fun locationIsEnabled(context: Context) : Boolean{
+            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                    locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         }
     }
 }
