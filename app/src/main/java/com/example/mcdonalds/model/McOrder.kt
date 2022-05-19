@@ -2,31 +2,23 @@ package com.example.mcdonalds.model
 
 import android.os.Build
 import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.stream.Collectors
-import kotlin.math.roundToInt
 
-class McOrder(user: McUser) {
+class McOrder {
 
     companion object {
         //private lateinit var user : User
+        private lateinit var user : McUser
         private var items : MutableMap<McItem, Int> = mutableMapOf()
         private var location : Location = McLocation()
         private val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
         private var id : String = this.generateId()
         private var date: String = this.getCurrentDate()
-        private const val UNIT: Int = 1
         private const val STRING_LENGTH = 4
-
-        /*
-        fun setUser(mcUser: McUser){
-            this.user = mcUser
-        }
-        */
 
         fun getId(): String {
             return this.id.substring(0, STRING_LENGTH)
@@ -61,28 +53,28 @@ class McOrder(user: McUser) {
             return calories
         }
 
-        /*
-        fun getUserInfo(): User {
-            return this.user
+        fun setUser(user: McUser){
+            this.user = user
         }
-        */
+
+        fun getUserInfo(): McUser? {
+            if(this.user != null){
+                return this.user
+            }
+            return null
+        }
 
         fun getLocationInfo(): Location {
             return this.location
         }
 
-        fun addItem(vararg item: McItem) {
-            item.forEach {
-                if (this.containsItem(it.getName())) {
-                    this.increaseAmount(it.getName(), UNIT)
-                } else {
-                    this.items[it] = UNIT
-                }
-            }
-        }
-
         fun addItem(item: McItem, value : Int){
-            this.items.putIfAbsent(item, value)
+            if(this.items.contains(item)){
+                val totalValue = this.items[item]!! + (value)
+                this.items.replace(item, totalValue)
+            }else{
+                this.items[item] = value
+            }
         }
 
         private fun deleteItem(vararg item: String) {
@@ -92,25 +84,6 @@ class McOrder(user: McUser) {
                 } else {
                     throw IllegalArgumentException("$it is not present on order")
                 }
-            }
-        }
-
-        fun increaseAmount(item: String, amount: Int) {
-            if (this.containsItem(item) && amount > 0) {
-                this.items[this.getMcItemFromString(item)] =
-                    (this.getValuesFromMcItem(item) + amount)
-            } else {
-                throw IllegalArgumentException("$item doesn't exist or amount must be > 0")
-            }
-        }
-
-        fun decreaseAmount(item: String, amount: Int) {
-            val itemValue = this.getValuesFromMcItem(item)
-            if (this.containsItem(item) && amount > 0 && itemValue >= amount) {
-                this.items[this.getMcItemFromString(item)] = (itemValue - amount)
-                this.updateMcItems() //Delete all McItem have 0 or negative value
-            } else {
-                throw IllegalArgumentException("$item doesn't exist or amount must be > 0")
             }
         }
 

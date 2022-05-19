@@ -58,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
         if(firebaseUser != null){
 
             //Set User to order
-            McOrder(McUser(firebaseUser.email!!, firebaseUser.uid))
+            McOrder()
 
             //Start the Home activity
             startActivity(Intent(this, HomeActivity::class.java))
@@ -125,7 +125,8 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 //Set the user in current order
-                McOrder(McUser(email!!, uid!!))
+                McOrder.setUser(McUser(email!!, uid!!))
+                Log.d("user", "Welcome $email")
 
                 //Start Main Activity
                 startActivity(Intent(this@LoginActivity, HomeActivity::class.java))

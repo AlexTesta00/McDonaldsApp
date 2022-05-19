@@ -7,6 +7,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.mcdonalds.BuildConfig
 import com.example.mcdonalds.R
 import com.example.mcdonalds.databinding.ActivityMapsBinding
 import com.example.mcdonalds.utils.Constants
@@ -19,15 +20,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
-    companion object{
-        const val PERMISSION_CODE = 100
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +35,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -47,12 +45,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         getCurrentLocation()
-        mMap.setOnMarkerClickListener(this)
-    }
 
-    override fun onMarkerClick(p0: Marker): Boolean {
-        Log.d("marker", "title : ${p0.title}, position : ${p0.position}")
-        return false
+        mMap.setOnMapClickListener {
+            Log.d("posizione", it.latitude.toString())
+        }
+
     }
 
     private fun checkPermission() : Boolean {
@@ -72,7 +69,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun requestPermission() {
         ActivityCompat.requestPermissions(this@MapsActivity,
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_CODE)
+                    Manifest.permission.ACCESS_COARSE_LOCATION), Permission.GPS_PERMISSION_CODE)
     }
 
     override fun onRequestPermissionsResult(
@@ -82,13 +79,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if(requestCode == PERMISSION_CODE){
+        if(requestCode == Permission.GPS_PERMISSION_CODE){
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Log.d("posizione", "Mi prendo la posizione")
                 getCurrentLocation()
             }else{
                 Log.d("posizione", "Non hai accettato i permessi")
-                //TODO Permission Denied Notification
+                MessageManager.displayNoGpsPermissionEnabled(this@MapsActivity)
             }
         }
     }

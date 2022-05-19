@@ -9,6 +9,8 @@ class Permission {
 
     companion object{
 
+        const val GPS_PERMISSION_CODE = 100
+
         fun checkNetworkIsEnabled(context: Context) : Boolean{
             val connectivityManager : ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 

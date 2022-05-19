@@ -8,10 +8,9 @@ import com.example.mcdonalds.R
 import com.example.mcdonalds.fragments.CartFragment
 import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.fragments.ScanFragment
+import com.example.mcdonalds.model.McOrder
+import com.example.mcdonalds.model.McUser
 import com.example.mcdonalds.utils.FragmentUtils
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -21,7 +20,6 @@ class HomeActivity : AppCompatActivity(){
     //Components
     private lateinit var bottomNavigationView : BottomNavigationView
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var maps : GoogleMap
     private val homeFragment : HomeFragment = HomeFragment()
     private val cartFragment : CartFragment = CartFragment()
     private val scanFragment : ScanFragment = ScanFragment()
@@ -59,7 +57,7 @@ class HomeActivity : AppCompatActivity(){
             startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
             finish()
         }else{
-            //Set current user
+            McOrder.setUser(McUser(firebaseUser.email!!, firebaseUser.uid))
         }
     }
 

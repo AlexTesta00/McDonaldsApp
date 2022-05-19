@@ -1,10 +1,12 @@
 package com.example.mcdonalds.utils
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.provider.Settings
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import com.example.mcdonalds.R
 
 class MessageManager {
@@ -19,6 +21,26 @@ class MessageManager {
                     activity.startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
                 }
                 .setNegativeButton(R.string.not_confirm){_,_ ->
+                    Toast.makeText(activity, "La mappa è stata disattivata :(", Toast.LENGTH_SHORT).show()
+                }
+                .show()
+        }
+
+        fun displayNoGpsPermissionEnabled(activity: Activity){
+            AlertDialog.Builder(activity)
+                .setTitle("Non hai accettato i permessi")
+                .setMessage("Non accettando i permessi per la localizzazione, non possiamo garantire un servizio efficente")
+                .setPositiveButton("Voglio visualizzare i permessi"){ _, _ ->
+
+                    //Request Permission
+                    ActivityCompat.requestPermissions(activity,
+                        arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION),
+                        Permission.GPS_PERMISSION_CODE
+                    )
+                }
+                .setNegativeButton("Ho capito"){_,_ ->
                     Toast.makeText(activity, "La mappa è stata disattivata :(", Toast.LENGTH_SHORT).show()
                 }
                 .show()
