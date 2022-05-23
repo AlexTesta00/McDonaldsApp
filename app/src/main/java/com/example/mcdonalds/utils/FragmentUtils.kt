@@ -26,5 +26,12 @@ class FragmentUtils {
             activity.findViewById<AppCompatTextView>(R.id.app_bar_title).text = title
         }
 
+        fun changeToFinishFragment(activity: AppCompatActivity, fragment: Fragment, tag: String){
+            val transaction:FragmentTransaction = activity.supportFragmentManager.beginTransaction()
+            transaction.setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+            transaction.replace(R.id.fragment_map_container, fragment, tag)
+            transaction.commit()
+        }
+
     }
 }

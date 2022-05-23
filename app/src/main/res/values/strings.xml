@@ -29,4 +29,5 @@
     <string name="dove_vuoi_effettuare_l_ordine">Dove vuoi effettuare l\'ordine?</string>
     <string name="seleziona_mcdonalds">Seleziona McDonalds</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="torna_alla_home">Torna alla home</string>
 </resources>

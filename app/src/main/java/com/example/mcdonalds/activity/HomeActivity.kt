@@ -38,6 +38,9 @@ class HomeActivity : AppCompatActivity(){
         //Activate All Listener
         setAllListener()
 
+        //Set Id
+        McOrder.changeId()
+
         //Set the first view
         FragmentUtils.changeCurrentFragment(this, homeFragment, resources.getString(R.string.home))
 

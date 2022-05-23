@@ -5,12 +5,19 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.mcdonalds.BuildConfig
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentContainerView
 import com.example.mcdonalds.R
 import com.example.mcdonalds.databinding.ActivityMapsBinding
+import com.example.mcdonalds.fragments.CompleteOrderFragment
+import com.example.mcdonalds.model.McLocation
+import com.example.mcdonalds.model.McOrder
 import com.example.mcdonalds.utils.Constants
+import com.example.mcdonalds.utils.FragmentUtils
 import com.example.mcdonalds.utils.MessageManager
 import com.example.mcdonalds.utils.Permission
 import com.google.android.gms.location.*
@@ -23,9 +30,11 @@ import com.google.android.gms.maps.model.*
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+    private lateinit var mapView : FragmentContainerView
+    private lateinit var question : TextView
     private lateinit var binding: ActivityMapsBinding
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
+    private lateinit var select : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +44,34 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
+        this.bindComponents()
+        this.setAllListener()
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+    }
+
+    private fun bindComponents(){
+        this.select = findViewById(R.id.btn_select_location)
+        this.mapView = findViewById(R.id.map)
+        this.question = findViewById(R.id.txt_select_location)
+    }
+
+    private fun setAllListener(){
+        this.select.setOnClickListener {
+            McOrder.setLocationInfo(McLocation("McDonald's Via Flaminia", LatLng(40.00, 12.00), true))
+            this.hideAllComponents()
+            FragmentUtils.changeToFinishFragment(this@MapsActivity, CompleteOrderFragment(), "CompleteOrderFragment")
+            McOrder.sendOrder()
+        }
+    }
+
+    private fun hideAllComponents(){
+        this.select.isVisible = false
+        this.mapView.isVisible = false
+        this.question.isVisible = false
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -152,4 +184,5 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         Log.d("posizione", "Setto la posizione")
     }
+
 }

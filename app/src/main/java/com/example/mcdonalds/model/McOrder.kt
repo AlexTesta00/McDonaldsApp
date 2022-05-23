@@ -1,27 +1,26 @@
 package com.example.mcdonalds.model
 
-import android.os.Build
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 import java.lang.IllegalArgumentException
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.random.Random
 
 class McOrder {
 
     companion object {
         //private lateinit var user : User
         private lateinit var user : McUser
+        private lateinit var location : McLocation
         private var items : MutableMap<McItem, Int> = mutableMapOf()
-        private var location : Location = McLocation()
         private val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
         private var id : String = this.generateId()
-        private var date: String = this.getCurrentDate()
         private const val STRING_LENGTH = 4
 
         fun getId(): String {
-            return this.id.substring(0, STRING_LENGTH)
+            return this.id
         }
 
         fun getAllItems(): MutableMap<McItem, Int> {
@@ -64,8 +63,15 @@ class McOrder {
             return null
         }
 
-        fun getLocationInfo(): Location {
-            return this.location
+        fun setLocationInfo(location: McLocation){
+            this.location = location
+        }
+
+        fun getLocationInfo(): McLocation? {
+            if(this.location != null){
+                return this.location
+            }
+            return null
         }
 
         fun addItem(item: McItem, value : Int){
@@ -88,40 +94,32 @@ class McOrder {
         }
 
         fun sendOrder() {
-            /*
             if(user != null){
-
+                val database = Firebase.database.reference
+                val serialize = Gson().toJson(getAllItems())
+                database.child(getUserInfo()!!.email.split("@")[0]).child(getId()).setValue(serialize)
             }else{
                 throw IllegalStateException("The user isn't set")
             }
-            */
         }
 
-        fun cloneOrder(order: Order) {
-            this.items = order.getAllItems()
+        fun cloneOrder() {
+
         }
 
         fun cancelOrder() {
             this.items.clear()
         }
 
-        private fun generateId(): String {
-            val randomString = (1..STRING_LENGTH)
-                .map { kotlin.random.Random.nextInt(0, charPool.size) }
-                .map(charPool::get)
-                .joinToString("")
-            return randomString + getCurrentDate() //+ this.user.getEmail()
+        fun changeId(){
+            this.id = this.generateId()
         }
 
-        private fun getCurrentDate(): String {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val current = LocalDateTime.now()
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-                current.format(formatter)
-            } else {
-                val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-                sdf.format(Date())
-            }
+        private fun generateId(): String {
+            return (1..STRING_LENGTH)
+                .map { Random.nextInt(0, charPool.size) }
+                .map(charPool::get)
+                .joinToString("")
         }
 
         private fun containsItem(item: String): Boolean {
@@ -151,7 +149,7 @@ class McOrder {
         }
 
         override fun toString(): String {
-            return "McOrder(id='$id', date='$date', items=$items, location=$location, user=user, charPool=$charPool)"
+            return "McOrder(id='$id', items=$items, location=$location, user=user, charPool=$charPool)"
         }
     }
 

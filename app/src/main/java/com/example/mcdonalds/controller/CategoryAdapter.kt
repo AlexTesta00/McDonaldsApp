@@ -1,17 +1,19 @@
 package com.example.mcdonalds.controller
 
+import android.app.Activity
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
+import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.model.Category
 import com.example.mcdonalds.utils.Constants
 
-class CategoryAdapter(private val categoryList : List<Category>) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(private val categoryList : List<Category>, private val activity: Activity) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     private var selectedItemPosition : Int = 0
 
@@ -28,9 +30,10 @@ class CategoryAdapter(private val categoryList : List<Category>) : RecyclerView.
         //Listener for all item in recyclerview
         holder.itemView.setOnClickListener {
             this.selectedItemPosition = holder.adapterPosition
-            Log.d("item", categoryList[selectedItemPosition].name);
             //If the item on recycler change
             // the recycler refresh
+            //This is use to refresh item, when the user change category
+            HomeFragment.refreshProductView(categoryList[selectedItemPosition].name, activity as AppCompatActivity)
             this.notifyDataSetChanged()
         }
 

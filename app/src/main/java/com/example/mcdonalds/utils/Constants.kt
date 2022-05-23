@@ -9,7 +9,7 @@ class Constants {
         const val CALORIES_UNITY = "kcal"
         const val UNIT = 1
         const val QUANTITY_LIMITER = 10
-        const val DEFAULT_CATEGORY = "Hamburger"
+        const val DEFAULT_CATEGORY = "BreakFast"
         const val ZOOM = 15.00f
         const val BEARING = 30.00f
         const val TILT = 30.00f

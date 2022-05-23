@@ -1,20 +1,5 @@
 package com.example.mcdonalds.model
 
-class McLocation : Location {
+import com.google.android.gms.maps.model.LatLng
 
-    override fun getLatitude(): Double {
-        TODO("Not yet implemented")
-    }
-
-    override fun getLongitude(): Double {
-        TODO("Not yet implemented")
-    }
-
-    override fun getMcName(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun isOpen(): Boolean {
-        TODO("Not yet implemented")
-    }
-}
+class McLocation(val name :String, val coordinate : LatLng, val isOpen : Boolean)

@@ -28,13 +28,22 @@ import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment() {
 
-    private lateinit var productView: RecyclerView
-    private lateinit var categoryView : RecyclerView
-    private lateinit var productAdapter: ProductAdapter
-    private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var loadView : GifImageView
-    private val categories : MutableList<Category> = mutableListOf() //Cache category
-    private val items : MutableList<SingleMcItem> = mutableListOf() //Cache Item
+
+    companion object{
+        private lateinit var productView: RecyclerView
+        private lateinit var categoryView : RecyclerView
+        private lateinit var productAdapter: ProductAdapter
+        private lateinit var categoryAdapter: CategoryAdapter
+        private val categories : MutableList<Category> = mutableListOf() //Cache category
+        private val items : MutableList<SingleMcItem> = mutableListOf() //Cache Item
+
+        //This is use to refresh item, when the user change category
+        fun refreshProductView(category: String, activity: Activity){
+            productAdapter = ProductAdapter(items.stream().filter { it.getCategory() == category }.collect(Collectors.toList()), activity as AppCompatActivity)
+            productView.adapter = productAdapter
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,24 +56,22 @@ class HomeFragment : Fragment() {
             //Set Visible Load View
             this.loadView.isVisible = true
 
-            if(this.categories.isEmpty()){
+            if(categories.isEmpty()){
                 //Get All Categories
                 this.getAllCategories()
-                Log.d("task", "Le categorie sono vuote")
             }else{
                 //Not request firebase category
                 this.loadView.isVisible = false
-                this.setCategoryRecyclerView(this.categories)
+                this.setCategoryRecyclerView(categories)
             }
 
-            if(this.items.isEmpty()){
+            if(items.isEmpty()){
                 //Get All Items From Server filter by category
                 this.getItems(Constants.DEFAULT_CATEGORY)
-                Log.d("task", "Gli item sono vuoti")
             }else{
                 //Not request firebase item
                 this.loadView.isVisible = false
-                this.setProductRecyclerView(this.items)
+                this.setProductRecyclerView(items)
             }
 
             //Change the AppBar Name
@@ -81,22 +88,23 @@ class HomeFragment : Fragment() {
     }
 
     private fun setCategoryRecyclerView(categories : MutableList<Category>){
-        this.categoryView.setHasFixedSize(true)
-        this.categoryAdapter = CategoryAdapter(categories)
-        this.categoryView.adapter = categoryAdapter
+        categoryView.setHasFixedSize(true)
+        categoryAdapter = CategoryAdapter(categories, activity as AppCompatActivity)
+        categoryView.adapter = categoryAdapter
     }
 
     private fun setProductRecyclerView(items : MutableList<SingleMcItem>){
-        this.productView.setHasFixedSize(true)
-        this.productAdapter = ProductAdapter(items, activity as AppCompatActivity)
-        this.productView.adapter = this.productAdapter
+        productView.setHasFixedSize(true)
+        productAdapter = ProductAdapter(items, activity as AppCompatActivity)
+        productView.adapter = productAdapter
     }
 
     private fun bindComponents(activity: Activity){
         this.loadView = activity.findViewById(R.id.load)
-        this.categoryView = activity.findViewById(R.id.rv_categories)
-        this.productView = activity.findViewById(R.id.rv_products)
+        categoryView = activity.findViewById(R.id.rv_categories)
+        productView = activity.findViewById(R.id.rv_products)
     }
+
 
     private fun getItems(selectedCategory : String) {
         val db = Firebase.firestore
@@ -143,7 +151,7 @@ class HomeFragment : Fragment() {
                 }
             }
             .addOnCompleteListener{
-                this.setProductRecyclerView(this.items)
+                this.setProductRecyclerView(items.stream().filter{it.getCategory() == selectedCategory}.collect(Collectors.toList()))
                 this.loadView.isVisible = false
                 Log.d("task", "Aggiorno la view")
             }
@@ -166,6 +174,7 @@ class HomeFragment : Fragment() {
             }
             .addOnCompleteListener {
                 //Add item to view
+                Log.d("item", "Setto le categorie")
                 this.setCategoryRecyclerView(categories)
             }
     }
@@ -177,25 +186,15 @@ class HomeFragment : Fragment() {
             //Bind All Components in View
             this.bindComponents(activity as AppCompatActivity)
 
-            //Set Visible Load View
             this.loadView.isVisible = true
+            this.setCategoryRecyclerView(categories)
 
-            if(this.categories.isEmpty()){
-                //Get All Categories
-                this.getAllCategories()
-                Log.d("task", "Le categorie sono vuote")
-            }else{
-                this.loadView.isVisible = false
-                this.setCategoryRecyclerView(this.categories)
-            }
-
-            if(this.items.isEmpty()){
+            if(items.isEmpty()){
                 //Get All Items From Server filter by category
                 this.getItems(Constants.DEFAULT_CATEGORY)
-                Log.d("task", "Gli item sono vuoti")
             }else{
                 this.loadView.isVisible = false
-                this.setProductRecyclerView(this.items)
+                refreshProductView(Constants.DEFAULT_CATEGORY,activity as AppCompatActivity)
             }
 
             //Change the AppBar Name

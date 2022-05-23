@@ -49,7 +49,6 @@ class LoginActivity : AppCompatActivity() {
         //init firebase auth
         firebaseAuth = FirebaseAuth.getInstance()
         checkUser()
-
     }
 
     private fun checkUser() {
