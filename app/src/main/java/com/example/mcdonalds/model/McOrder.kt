@@ -11,7 +11,6 @@ import kotlin.random.Random
 class McOrder {
 
     companion object {
-        //private lateinit var user : User
         private lateinit var user : McUser
         private lateinit var location : McLocation
         private var items : MutableMap<McItem, Int> = mutableMapOf()

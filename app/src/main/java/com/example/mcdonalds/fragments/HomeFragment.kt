@@ -1,12 +1,14 @@
 package com.example.mcdonalds.fragments
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +20,7 @@ import com.example.mcdonalds.model.Ingredient
 import com.example.mcdonalds.model.SingleMcItem
 import com.example.mcdonalds.utils.Constants
 import com.example.mcdonalds.utils.FragmentUtils
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -29,6 +32,7 @@ import kotlin.collections.ArrayList
 class HomeFragment : Fragment() {
 
     private lateinit var loadView : GifImageView
+    private lateinit var qrButton : FloatingActionButton
 
     companion object{
         private lateinit var productView: RecyclerView
@@ -52,6 +56,9 @@ class HomeFragment : Fragment() {
 
             //Bind All Components in View
             this.bindComponents(activity as AppCompatActivity)
+
+            //Set all view listener
+            this.setAllListener()
 
             //Set Visible Load View
             this.loadView.isVisible = true
@@ -101,6 +108,7 @@ class HomeFragment : Fragment() {
 
     private fun bindComponents(activity: Activity){
         this.loadView = activity.findViewById(R.id.load)
+        this.qrButton = activity.findViewById(R.id.fab_qr)
         categoryView = activity.findViewById(R.id.rv_categories)
         productView = activity.findViewById(R.id.rv_products)
     }
@@ -186,6 +194,9 @@ class HomeFragment : Fragment() {
             //Bind All Components in View
             this.bindComponents(activity as AppCompatActivity)
 
+            //Set all view listener
+            this.setAllListener()
+
             this.loadView.isVisible = true
             this.setCategoryRecyclerView(categories)
 
@@ -199,6 +210,12 @@ class HomeFragment : Fragment() {
 
             //Change the AppBar Name
             FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
+        }
+    }
+
+    private fun setAllListener(){
+        this.qrButton.setOnClickListener {
+            FragmentUtils.changeCurrentFragment(activity as AppCompatActivity, QrCodeScannerFragment(), "QrCodeFragment")
         }
     }
 }

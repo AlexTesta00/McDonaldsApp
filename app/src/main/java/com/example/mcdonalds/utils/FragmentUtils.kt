@@ -33,5 +33,9 @@ class FragmentUtils {
             transaction.commit()
         }
 
+        fun returnToBackFragment(activity: AppCompatActivity){
+            activity.supportFragmentManager.popBackStack()
+        }
+
     }
 }

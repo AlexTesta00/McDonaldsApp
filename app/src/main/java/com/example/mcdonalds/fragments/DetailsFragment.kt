@@ -70,7 +70,7 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
         this.mcItemName.text = this.mcItem.getName()
 
         //init ingredients
-        this.adapter = IngredientAdapter(this.mcItem.getAllIngredients(), activity as AppCompatActivity)
+        this.adapter = IngredientAdapter(this.mcItem.getAllIngredients(), activity)
         this.mcItemIngredient.adapter = this.adapter
 
         //Make swappable recycler view
@@ -136,6 +136,9 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
         this.addToCart.setOnClickListener {
             McOrder.addItem(this.mcItem, quantity)
             Snackbar.make(mcItemIngredient, "${mcItem.getName()} è stato aggiunto al carrello", Snackbar.LENGTH_SHORT).show()
+
+            //Return to home view
+            FragmentUtils.returnToBackFragment(activity as AppCompatActivity)
         }
     }
     //Display Error message because all ingredients are cancel

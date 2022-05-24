@@ -45,5 +45,22 @@ class MessageManager {
                 }
                 .show()
         }
+
+        fun displayNoCameraEnabled(activity: Activity){
+            AlertDialog.Builder(activity)
+                .setTitle("Non hai accettato i permessi")
+                .setMessage("Non accettando i permessi per la fotocamera, non possiamo garantire un servizio efficente")
+                .setPositiveButton("Voglio visualizzare i permessi"){ _, _ ->
+
+                    //Request Permission
+                    ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CAMERA),
+                        Permission.CAMERA_PERMISSION
+                    )
+                }
+                .setNegativeButton("Ho capito"){_,_ ->
+                    Toast.makeText(activity, "La camera è stata disattivata :(", Toast.LENGTH_SHORT).show()
+                }
+                .show()
+        }
     }
 }
