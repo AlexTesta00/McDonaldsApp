@@ -1,16 +1,15 @@
 package com.example.mcdonalds.fragments
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
 import com.example.mcdonalds.controller.CategoryAdapter
@@ -24,21 +23,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import pl.droidsonroids.gif.GifImageView
 import java.util.stream.Collectors
-import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
 
     private lateinit var loadView : GifImageView
     private lateinit var qrButton : FloatingActionButton
+    private lateinit var categoryAdapter: CategoryAdapter
 
     companion object{
         private lateinit var productView: RecyclerView
         private lateinit var categoryView : RecyclerView
         private lateinit var productAdapter: ProductAdapter
-        private lateinit var categoryAdapter: CategoryAdapter
         private val categories : MutableList<Category> = mutableListOf() //Cache category
         private val items : MutableList<SingleMcItem> = mutableListOf() //Cache Item
 
@@ -114,6 +115,10 @@ class HomeFragment : Fragment() {
     }
 
 
+    /*This is caused because firebase return an ArrayList of element
+    * but kotlin compiler know element of instance Any?
+    */
+    @Suppress("UNCHECKED_CAST")
     private fun getItems(selectedCategory : String) {
         val db = Firebase.firestore
         db.collection("item")
@@ -128,7 +133,7 @@ class HomeFragment : Fragment() {
                     if (!onlyName.contains(document["name"] as String)) {
 
                         //SingleMcItem Attribute
-                        val ingredientsItem : ArrayList<DocumentReference> = document["ingredients"] as ArrayList<DocumentReference>
+                        val ingredientsItem : MutableList<DocumentReference> = document["ingredients"] as MutableList<DocumentReference>
                         val ingredients : MutableList<Ingredient> = mutableListOf()
                         val name : String = document["name"] as String
                         val image : String = document["image"] as String
@@ -142,14 +147,14 @@ class HomeFragment : Fragment() {
                                 .get()
                                 .addOnSuccessListener{ currentItem ->
                                     val weight = (currentItem["weight"] as Long).toFloat()
-                                    val name = currentItem["name"] as String
-                                    val image = currentItem["image"] as String
+                                    val nameOfItem = currentItem["name"] as String
+                                    val imageOfItem = currentItem["image"] as String
                                     val calories = (currentItem["calories"] as Long).toInt()
                                     var modifiable = (currentItem["modifiable"] as Boolean?)
                                     if(modifiable == null){
                                         modifiable = false
                                     }
-                                    ingredients.add(Ingredient(name,image,modifiable,weight,calories))
+                                    ingredients.add(Ingredient(nameOfItem,imageOfItem,modifiable,weight,calories))
                                 }
                         }
 
@@ -161,7 +166,6 @@ class HomeFragment : Fragment() {
             .addOnCompleteListener{
                 this.setProductRecyclerView(items.stream().filter{it.getCategory() == selectedCategory}.collect(Collectors.toList()))
                 this.loadView.isVisible = false
-                Log.d("task", "Aggiorno la view")
             }
             .addOnFailureListener{
 
@@ -215,7 +219,25 @@ class HomeFragment : Fragment() {
 
     private fun setAllListener(){
         this.qrButton.setOnClickListener {
-            FragmentUtils.changeCurrentFragment(activity as AppCompatActivity, QrCodeScannerFragment(), "QrCodeFragment")
+            val scanOptions = ScanOptions()
+            scanOptions.setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+            scanOptions.setPrompt("Scannerizza un McDonald's QR Code")
+            scanOptions.setCameraId(0)
+            scanOptions.setBeepEnabled(false)
+            scanOptions.setBarcodeImageEnabled(true)
+            scanOptions.setOrientationLocked(false)
+            barcodeLauncher.launch(scanOptions)
+        }
+    }
+
+    // Register the launcher and result handler
+    private val barcodeLauncher = registerForActivityResult(
+        ScanContract()
+    ) { result: ScanIntentResult ->
+        if (result.contents == null) {
+            Toast.makeText(activity, "Nessun codice QR valido rilevato", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(activity, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
         }
     }
 }
