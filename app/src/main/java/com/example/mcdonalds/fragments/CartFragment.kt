@@ -3,23 +3,21 @@ package com.example.mcdonalds.fragments
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
-import com.example.mcdonalds.activity.HomeActivity
 import com.example.mcdonalds.activity.MapsActivity
 import com.example.mcdonalds.controller.CartAdapter
 import com.example.mcdonalds.model.*
 import com.example.mcdonalds.utils.FragmentUtils
-import com.google.android.gms.maps.MapFragment
-import kotlin.math.floor
+import com.google.android.material.snackbar.Snackbar
+import java.util.stream.Collectors
 
 
 class CartFragment : Fragment() {
@@ -32,11 +30,18 @@ class CartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if(activity != null){
-            bindComponents(activity as AppCompatActivity)
-            setCategoryRecyclerView()
-            modifyPrice()
-            setAllListener()
-            FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.carrello))
+            this.bindComponents(activity as AppCompatActivity)
+            this.setCategoryRecyclerView()
+            this.modifyPrice()
+            this.setAllListener()
+
+            //This is used to increase UI / UX experience
+            this.updateButton()
+
+            //Make recycler view swappable
+            ItemTouchHelper(this.swappableRecyclerView()).attachToRecyclerView(this.cartView)
+
+            FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.cart))
         }
     }
 
@@ -62,16 +67,49 @@ class CartFragment : Fragment() {
 
     private fun modifyPrice(){
         val price = McOrder.getTotalPrice().toFloat()
-        this.buttonPayment.text = "Paga " + price.toString() + "€"
+        this.buttonPayment.text = getString(R.string.pay, price.toString())
     }
 
     private fun setAllListener(){
         this.buttonPayment.setOnClickListener {
             if(this.cartAdapter.itemCount > 0){
-                //FragmentUtils.changeCurrentFragment(activity as AppCompatActivity, MapsFragment(), "Maps")
                 startActivity(Intent(activity,MapsActivity::class.java))
                 activity?.finish()
             }
         }
+    }
+
+    private fun swappableRecyclerView() : ItemTouchHelper.SimpleCallback {
+        val simpleCallBack = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT.or(ItemTouchHelper.DOWN)) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+
+                when(direction){
+                    ItemTouchHelper.LEFT -> {
+                        val itemToDelete = McOrder.getAllItems().keys.stream().collect(Collectors.toList())[position]
+                        McOrder.deleteItem(itemToDelete)
+                        cartAdapter.notifyItemRemoved(position)
+                        Snackbar.make(cartView, "${itemToDelete.getName()} è stato cancellato", Snackbar.LENGTH_SHORT).show()
+                        modifyPrice()
+                        updateButton()
+                    }
+                }
+            }
+        }
+
+        return simpleCallBack
+    }
+
+    private fun updateButton(){
+        this.buttonPayment.isEnabled = this.cartAdapter.itemCount > 0
     }
 }

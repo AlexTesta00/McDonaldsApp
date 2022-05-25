@@ -76,10 +76,10 @@ class HomeActivity : AppCompatActivity(){
                     R.string.home
                 ))
                 R.id.menu_cart -> FragmentUtils.changeCurrentFragment(this,cartFragment, resources.getString(
-                    R.string.carrello
+                    R.string.cart
                 ))
                 R.id.menu_qr_code -> FragmentUtils.changeCurrentFragment(this,scanFragment, resources.getString(
-                    R.string.storico
+                    R.string.history
                 ))
             }
             true

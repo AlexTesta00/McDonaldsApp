@@ -82,10 +82,10 @@ class McOrder {
             }
         }
 
-        private fun deleteItem(vararg item: String) {
+        fun deleteItem(vararg item: McItem) {
             item.forEach {
-                if (this.containsItem(it)) {
-                    this.items.remove(this.getMcItemFromString(it))
+                if (items.contains(it)) {
+                    this.items.remove(it)
                 } else {
                     throw IllegalArgumentException("$it is not present on order")
                 }
@@ -119,28 +119,6 @@ class McOrder {
                 .map { Random.nextInt(0, charPool.size) }
                 .map(charPool::get)
                 .joinToString("")
-        }
-
-        private fun containsItem(item: String): Boolean {
-            return this.items.keys.map { it.getName().lowercase() }.contains(item)
-        }
-
-        private fun getMcItemFromString(item: String): McItem {
-            return this.items.entries.stream().filter { it.key.getName() == item }.findAny()
-                .get().key
-        }
-
-        private fun getValuesFromMcItem(item: String): Int {
-            return this.items[this.getMcItemFromString(item)]!!
-        }
-
-        private fun updateMcItems() {
-            if (this.items.values.stream().filter { it <= 0 }.count() >= 1) {
-                val itemName =
-                    this.items.entries.stream().filter { it.value <= 0 }.map { it.key.getName() }
-                        .collect(Collectors.toList())
-                this.deleteItem(*itemName.toTypedArray())
-            }
         }
 
         override fun hashCode(): Int {

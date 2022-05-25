@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/menu_cart"
-        android:title="@string/carrello"
+        android:title="@string/cart"
         android:icon="@drawable/bag_selector"
         />
 
@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/menu_qr_code"
-        android:title="@string/storico"
+        android:title="@string/history"
         android:icon="@drawable/history_selector"
         />
 </menu>

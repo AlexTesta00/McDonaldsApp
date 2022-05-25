@@ -1,7 +1,6 @@
 package com.example.mcdonalds.fragments
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import com.example.mcdonalds.controller.IngredientAdapter
 import com.example.mcdonalds.model.*
 import com.example.mcdonalds.utils.Constants
 import com.example.mcdonalds.utils.FragmentUtils
+import com.example.mcdonalds.utils.MessageManager
 import com.google.android.material.snackbar.Snackbar
 
 class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
@@ -74,7 +74,7 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
         this.mcItemIngredient.adapter = this.adapter
 
         //Make swappable recycler view
-        ItemTouchHelper(swappableRecyclerView()).attachToRecyclerView(this.mcItemIngredient)
+        ItemTouchHelper(this.swappableRecyclerView()).attachToRecyclerView(this.mcItemIngredient)
 
         //init calories
         this.calories.text = this.computeCalories()
@@ -104,9 +104,8 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
                             Snackbar.make(mcItemIngredient, "$itemToDelete è stato cancellato", Snackbar.LENGTH_SHORT).show()
                             calories.text = computeCalories()
                         }else{
-                            displayErrorMessage(requireContext())
-                            adapter.notifyDataSetChanged()
-                            Snackbar.make(mcItemIngredient, "Non puoi cancellare questo ingrediente", Snackbar.LENGTH_SHORT).show()
+                            MessageManager.displayNoIngredientModifiable(activity as AppCompatActivity)
+                            adapter.notifyItemChanged(position)
                         }
                     }
                 }
@@ -118,6 +117,7 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
 
     //Set listener
     private fun setAllListener(){
+        //Add Quantity Item
         this.addQuantity.setOnClickListener {
             if(this.quantity < Constants.QUANTITY_LIMITER){
                 this.quantity += Constants.UNIT
@@ -125,6 +125,7 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
             }
         }
 
+        //Remove Quantity Item
         this.removeQuantity.setOnClickListener {
             if(this.quantity > 1){
                 this.quantity -= Constants.UNIT
@@ -140,15 +141,6 @@ class DetailsFragment(private val mcItem: SingleMcItem) : Fragment(){
             //Return to home view
             FragmentUtils.returnToBackFragment(activity as AppCompatActivity)
         }
-    }
-    //Display Error message because all ingredients are cancel
-    private fun displayErrorMessage(context: Context){
-        androidx.appcompat.app.AlertDialog.Builder(context)
-            .setTitle("Non puoi eliminare questo ingrediente")
-            .setMessage("Questo ingrediente è fondamentale per la costruzione del panino, non puoi eliminarlo")
-            .setPositiveButton("Ho capito"){ _, _ -> }
-            .setCancelable(false)
-            .show()
     }
 
     //Refresh Calories when item are deleted

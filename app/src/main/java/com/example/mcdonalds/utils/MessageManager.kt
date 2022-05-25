@@ -62,5 +62,14 @@ class MessageManager {
                 }
                 .show()
         }
+
+        fun displayNoIngredientModifiable(activity: Activity){
+            AlertDialog.Builder(activity)
+                .setTitle("Non puoi eliminare questo ingrediente")
+                .setMessage("Questo ingrediente è fondamentale per la costruzione del panino, non puoi eliminarlo")
+                .setPositiveButton("Ho capito"){ _, _ -> }
+                .setCancelable(false)
+                .show()
+        }
     }
 }
