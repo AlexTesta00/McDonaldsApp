@@ -4,18 +4,18 @@
     <item
         android:id="@+id/menu_cart"
         android:title="@string/cart"
-        android:icon="@drawable/bag_selector"
+        android:icon="@drawable/ic_bag_inactive"
         />
 
     <item
         android:id="@+id/menu_home"
         android:title="@string/home"
-        android:icon="@drawable/home_selector"
+        android:icon="@drawable/ic_mcdonalds_inactive"
         />
 
     <item
         android:id="@+id/menu_qr_code"
         android:title="@string/history"
-        android:icon="@drawable/history_selector"
+        android:icon="@drawable/ic_baseline_history_24_inactive"
         />
 </menu>

@@ -11,14 +11,14 @@ import com.example.mcdonalds.fragments.ScanFragment
 import com.example.mcdonalds.model.McOrder
 import com.example.mcdonalds.model.McUser
 import com.example.mcdonalds.utils.FragmentUtils
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import nl.joery.animatedbottombar.AnimatedBottomBar
 
 class HomeActivity : AppCompatActivity(){
 
     //Components
-    private lateinit var bottomNavigationView : BottomNavigationView
+    private lateinit var bottomNavigationView : AnimatedBottomBar
     private lateinit var firebaseAuth: FirebaseAuth
     private val homeFragment : HomeFragment = HomeFragment()
     private val cartFragment : CartFragment = CartFragment()
@@ -29,29 +29,24 @@ class HomeActivity : AppCompatActivity(){
         setContentView(R.layout.activity_main)
 
         //Check if User are auth
-        firebaseAuth = FirebaseAuth.getInstance()
-        checkUser()
+        this.firebaseAuth = FirebaseAuth.getInstance()
+        this.checkUser()
 
         //Attach view components
-        attachAllComponents()
+        this.attachAllComponents()
 
         //Activate All Listener
-        setAllListener()
+        this.setAllListener(this@HomeActivity)
 
         //Set Id
         McOrder.changeId()
 
+        //Set the custom AppBar
+        this.setCustomAppBar()
+
         //Set the first view
         FragmentUtils.changeCurrentFragment(this, homeFragment, resources.getString(R.string.home))
 
-        //Set the selected item menu
-        bottomNavigationView.selectedItemId = R.id.menu_home
-
-        //Set Custom AppBar
-        setCustomAppBar()
-
-        //Set Custom Icon in BottomNavBar
-        bottomNavigationView.itemIconTintList = null
     }
 
     private fun checkUser(){
@@ -65,24 +60,23 @@ class HomeActivity : AppCompatActivity(){
     }
 
     private fun attachAllComponents(){
-        bottomNavigationView = findViewById(R.id.bottom_navigation_menu)
+        this.bottomNavigationView = findViewById(R.id.bottom_navigation_menu)
     }
 
-    private fun setAllListener(){
+    private fun setAllListener(activity: AppCompatActivity){
         //Bottom NavigationBar Listener
-        bottomNavigationView.setOnItemSelectedListener {
-            when(it.itemId){
-                R.id.menu_home -> FragmentUtils.changeCurrentFragment(this,homeFragment, resources.getString(
+        this.bottomNavigationView.onTabSelected = {
+            when(it.id){
+                R.id.menu_home -> FragmentUtils.changeCurrentFragment(activity,homeFragment, resources.getString(
                     R.string.home
                 ))
-                R.id.menu_cart -> FragmentUtils.changeCurrentFragment(this,cartFragment, resources.getString(
+                R.id.menu_cart -> FragmentUtils.changeCurrentFragment(activity,cartFragment, resources.getString(
                     R.string.cart
                 ))
-                R.id.menu_qr_code -> FragmentUtils.changeCurrentFragment(this,scanFragment, resources.getString(
+                R.id.menu_qr_code -> FragmentUtils.changeCurrentFragment(activity,scanFragment, resources.getString(
                     R.string.history
                 ))
             }
-            true
         }
     }
 

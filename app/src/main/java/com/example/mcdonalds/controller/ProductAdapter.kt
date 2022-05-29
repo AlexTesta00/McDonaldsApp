@@ -1,6 +1,5 @@
 package com.example.mcdonalds.controller
 
-import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View

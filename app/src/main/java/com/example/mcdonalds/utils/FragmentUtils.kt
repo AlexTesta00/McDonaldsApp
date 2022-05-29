@@ -1,15 +1,11 @@
 package com.example.mcdonalds.utils
 
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.mcdonalds.R
-import com.example.mcdonalds.controller.ProductAdapter
 
 class FragmentUtils {
 
@@ -22,7 +18,7 @@ class FragmentUtils {
             transaction.commit()
         }
 
-        fun changeAppBarName(activity: Activity, title: String){
+        fun changeAppBarName(activity: AppCompatActivity, title: String){
             activity.findViewById<AppCompatTextView>(R.id.app_bar_title).text = title
         }
 
