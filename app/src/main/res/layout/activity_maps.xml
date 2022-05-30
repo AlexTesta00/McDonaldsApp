@@ -43,7 +43,7 @@
         android:layout_marginBottom="30dp"
         android:text="@string/select_mc_dondalds"
         android:textColor="@color/white"
-        android:enabled="true"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

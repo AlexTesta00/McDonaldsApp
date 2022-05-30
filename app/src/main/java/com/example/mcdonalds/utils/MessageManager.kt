@@ -71,5 +71,14 @@ class MessageManager {
                 .setCancelable(false)
                 .show()
         }
+
+        fun displayNoPositionComputable(activity: Activity){
+            AlertDialog.Builder(activity)
+                .setTitle("Ops! Qualcosa è andato storto...")
+                .setMessage("Qusta funzione al momento non è disponibile, riprova")
+                .setPositiveButton("Ho capito"){ _, _ -> }
+                .setCancelable(false)
+                .show()
+        }
     }
 }

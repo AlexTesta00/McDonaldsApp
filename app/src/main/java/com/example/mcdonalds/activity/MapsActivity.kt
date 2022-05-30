@@ -2,15 +2,18 @@ package com.example.mcdonalds.activity
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentContainerView
+import com.example.mcdonalds.BuildConfig
 import com.example.mcdonalds.R
 import com.example.mcdonalds.databinding.ActivityMapsBinding
 import com.example.mcdonalds.fragments.CompleteOrderFragment
@@ -26,15 +29,26 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private lateinit var mMap: GoogleMap
     private lateinit var mapView : FragmentContainerView
     private lateinit var question : TextView
     private lateinit var binding: ActivityMapsBinding
+    private lateinit var placeClient : PlacesClient
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var select : Button
+
+    companion object{
+        const val PRECISION_MODULE = 30
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +60,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         this.bindComponents()
         this.setAllListener()
+
+        //Places Info
+        Places.initialize(this, BuildConfig.MAPS_API_KEY)
+        this.placeClient = Places.createClient(this)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -61,7 +79,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setAllListener(){
         this.select.setOnClickListener {
-            McOrder.setLocationInfo(McLocation("McDonald's Via Flaminia", LatLng(40.00, 12.00), true))
+            //McOrder.setLocationInfo(McLocation("McDonald's Via Flaminia", LatLng(40.00, 12.00), true))
             this.hideAllComponents()
             FragmentUtils.changeToFinishFragment(this@MapsActivity, CompleteOrderFragment(), "CompleteOrderFragment")
             McOrder.sendOrder()
@@ -75,13 +93,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        this.mMap = googleMap
         getCurrentLocation()
 
-        mMap.setOnMapClickListener {
-            Log.d("posizione", it.latitude.toString())
+        this.mMap.setOnMapClickListener {
+            this.getPlaceDetailsFromCoordinates(it)
         }
-
     }
 
     private fun checkPermission() : Boolean {
@@ -185,4 +202,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.d("posizione", "Setto la posizione")
     }
 
+    private fun getPlaceDetailsFromCoordinates(point : LatLng){
+        val db = Firebase.firestore
+        var mcLocation : McLocation
+        db.collection("places")
+            .get()
+            .addOnSuccessListener {
+                for (document in it){
+                    val name = document["name"] as String
+                    val coordinates = LatLng(document["latitude"] as Double,document["longitude"] as Double)
+                    if(this.computeModule(coordinates, point) <= PRECISION_MODULE){
+                        mcLocation = McLocation(name, coordinates)
+                        Snackbar.make(this.mapView, "$name è stato selezionato", Snackbar.LENGTH_SHORT).show()
+                        McOrder.setLocationInfo(mcLocation)
+
+                        //Make button select place enabled
+                        this.select.isEnabled = true
+                    }else{
+                        Toast.makeText(this@MapsActivity, "Questo luogo al momento non è disponibile", Toast.LENGTH_SHORT).show()
+                        //Make button select place disabled
+                        this.select.isEnabled = false
+                    }
+                }
+            }
+            .addOnFailureListener {
+                MessageManager.displayNoPositionComputable(this)
+            }
+    }
+
+    private fun computeModule(p0 : LatLng, p1 : LatLng) : Int{
+        val startPoint  = Location("startPoint")
+        startPoint.latitude = p0.latitude
+        startPoint.longitude = p0.longitude
+
+        val endPoint = Location("endPoint")
+        endPoint.latitude = p1.latitude
+        endPoint.longitude = p1.longitude
+
+        return startPoint.distanceTo(endPoint).toInt()
+    }
 }
