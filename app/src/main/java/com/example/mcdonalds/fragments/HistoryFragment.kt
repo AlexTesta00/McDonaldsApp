@@ -1,32 +1,36 @@
 package com.example.mcdonalds.fragments
 
+import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
+import com.example.mcdonalds.controller.HistoryAdapter
+import com.example.mcdonalds.model.McOrder
+import com.example.mcdonalds.utils.FragmentUtils
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ScanFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ScanFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private lateinit var recycler : RecyclerView
+    private lateinit var adapter : HistoryAdapter
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if(activity != null){
+            this.bindComponents(activity as AppCompatActivity)
+            this.getHistory()
+            FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.history))
         }
     }
 
@@ -35,26 +39,53 @@ class ScanFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_scan, container, false)
+        return inflater.inflate(R.layout.fragment_history, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ScanFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ScanFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun bindComponents(activity : Activity){
+        this.recycler = activity.findViewById(R.id.history_recycler)
+    }
+
+    private fun setRecyclerAdapter(oldOrders : Map<String, List<String>>){
+        Log.d("valore", "Setto la recycler view")
+        Log.d("valore", "Recycler Items : $oldOrders")
+        this.adapter = HistoryAdapter(oldOrders)
+        this.recycler.adapter = this.adapter
+    }
+
+    private fun getHistory(){
+        val database = Firebase.database
+        val reference = database.getReference(McOrder.getUserInfo()!!.email.split("@")[0])
+
+
+        reference.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.value != null){
+                    val value = snapshot.value as Map<String, List<String>>
+
+                    //Set the item on recycler view
+                    setRecyclerAdapter(value)
+
+                    //Log.d("valore", value.toString());
+                }else{
+                    //Todo implement no order
                 }
             }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(activity != null){
+            this.bindComponents(activity as AppCompatActivity)
+            this.getHistory()
+            FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.history))
+        }
     }
 }

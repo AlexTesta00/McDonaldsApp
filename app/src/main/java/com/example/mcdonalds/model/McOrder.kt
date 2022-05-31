@@ -40,17 +40,6 @@ class McOrder {
             return price
         }
 
-        fun getTotalCalories(): Int {
-            val caloriesSingleItem =
-                this.items.keys.stream().map { it.getCalories() }.collect(Collectors.toList())
-            val quantity = this.items.values.stream().collect(Collectors.toList())
-            var calories = 0
-            for (i in 0..caloriesSingleItem.size) {
-                calories += caloriesSingleItem[i] * quantity[i]
-            }
-            return calories
-        }
-
         fun setUser(user: McUser){
             this.user = user
         }
@@ -94,16 +83,24 @@ class McOrder {
 
         fun sendOrder() {
             if(user != null){
-                val database = Firebase.database.reference
-                val serialize = Gson().toJson(getAllItems())
-                database.child(getUserInfo()!!.email.split("@")[0]).child(getId()).setValue(serialize)
+                this.writeNewOrder()
             }else{
                 throw IllegalStateException("The user isn't set")
             }
         }
 
-        fun cloneOrder() {
+        private fun writeNewOrder(){
+            val database = Firebase.database.reference
+            database.child(getUserInfo()!!.email.split("@")[0]).child(getId()).setValue(this.getOnlyItemsName())
+        }
 
+        private fun getOnlyItemsName() : MutableList<String>{
+            return this.getAllItems().keys.stream().map{it.getName()}.collect(Collectors.toList())
+        }
+
+        fun cloneOrder(mcItems : MutableMap<McItem, Int>) {
+            this.items.clear()
+            this.items = mcItems
         }
 
         fun cancelOrder() {

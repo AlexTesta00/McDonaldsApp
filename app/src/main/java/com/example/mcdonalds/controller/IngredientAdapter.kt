@@ -20,7 +20,7 @@ class IngredientAdapter(private var ingredient: List<Ingredient>, private var ac
     }
 
     override fun onBindViewHolder(holder: IngredientAdapter.ViewHolder, position: Int) {
-        val currentIngredient = ingredient[position]
+        val currentIngredient = this.ingredient[position]
 
         //Recover Internal Image from name
         val resourceString = "@drawable/${currentIngredient.image}"
@@ -31,7 +31,7 @@ class IngredientAdapter(private var ingredient: List<Ingredient>, private var ac
     }
 
     override fun getItemCount(): Int {
-        return ingredient.size
+        return this.ingredient.size
     }
 
 

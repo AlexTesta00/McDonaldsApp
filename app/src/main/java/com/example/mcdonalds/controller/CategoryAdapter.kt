@@ -52,7 +52,7 @@ class CategoryAdapter(private val categoryList : List<Category>, private val act
         return categoryList.size
     }
 
-    class CategoryViewHolder(category: View) : RecyclerView.ViewHolder(category){
+    inner class CategoryViewHolder(category: View) : RecyclerView.ViewHolder(category){
         val buttonCategory : Button = category.findViewById(R.id.btn_category)
     }
 }

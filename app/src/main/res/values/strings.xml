@@ -32,4 +32,8 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="back_to_home">Torna alla home</string>
     <string name="Access">Accedi</string>
+    <string name="history_order">Storico Ordini</string>
+    <string name="replace_order">Clona Ordine</string>
+    <string name="mc_item_image">Immagine dell\'oggetto</string>
+    <string name="mc_logo">Mc Logo</string>
 </resources>
