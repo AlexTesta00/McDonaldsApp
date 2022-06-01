@@ -1,21 +1,21 @@
 package com.example.mcdonalds.controller
 
-import android.app.Activity
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
 import com.example.mcdonalds.fragments.HomeFragment
 import com.example.mcdonalds.model.Category
 import com.example.mcdonalds.utils.Constants
 
-class CategoryAdapter(private val categoryList : List<Category>, private val activity: Activity) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(private val categoryList : List<Category>) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
-    private var selectedItemPosition : Int = 0
+    companion object{
+        var selectedItemPosition : Int = 0
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return CategoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.elevated_button, parent, false))
@@ -29,11 +29,11 @@ class CategoryAdapter(private val categoryList : List<Category>, private val act
 
         //Listener for all item in recyclerview
         holder.itemView.setOnClickListener {
-            this.selectedItemPosition = holder.adapterPosition
+            selectedItemPosition = holder.bindingAdapterPosition
             //If the item on recycler change
             // the recycler refresh
             //This is use to refresh item, when the user change category
-            HomeFragment.refreshProductView(categoryList[selectedItemPosition].name, activity as AppCompatActivity)
+            HomeFragment.refreshProductView(categoryList[selectedItemPosition])
             this.notifyDataSetChanged()
         }
 

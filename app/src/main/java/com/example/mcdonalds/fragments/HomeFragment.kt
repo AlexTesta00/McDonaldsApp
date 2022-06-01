@@ -8,47 +8,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
-import com.example.mcdonalds.controller.CategoryAdapter
-import com.example.mcdonalds.controller.ProductAdapter
 import com.example.mcdonalds.model.Category
-import com.example.mcdonalds.model.Ingredient
-import com.example.mcdonalds.model.SingleMcItem
+import com.example.mcdonalds.model.DownloadManager
 import com.example.mcdonalds.utils.Constants
 import com.example.mcdonalds.utils.FragmentUtils
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
-import pl.droidsonroids.gif.GifImageView
-import java.util.stream.Collectors
 
 
 class HomeFragment : Fragment() {
 
-    private lateinit var loadView : GifImageView
     private lateinit var qrButton : FloatingActionButton
-    private lateinit var categoryAdapter: CategoryAdapter
-
-    companion object{
-        private lateinit var productView: RecyclerView
-        private lateinit var categoryView : RecyclerView
-        private lateinit var productAdapter: ProductAdapter
-        private val categories : MutableList<Category> = mutableListOf() //Cache category
-        private val items : MutableList<SingleMcItem> = mutableListOf() //Cache Item
-
-        //This is use to refresh item, when the user change category
-        fun refreshProductView(category: String, activity: Activity){
-            productAdapter = ProductAdapter(items.stream().filter { it.getCategory() == category }.collect(Collectors.toList()), activity as AppCompatActivity)
-            productView.adapter = productAdapter
-        }
-    }
+    private lateinit var productView: RecyclerView
+    private lateinit var categoryView : RecyclerView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,30 +38,11 @@ class HomeFragment : Fragment() {
             //Set all view listener
             this.setAllListener()
 
-            //Set Visible Load View
-            this.loadView.isVisible = true
-
-            if(categories.isEmpty()){
-                //Get All Categories
-                this.getAllCategories()
-            }else{
-                //Not request firebase category
-                this.loadView.isVisible = false
-                this.setCategoryRecyclerView(categories)
-            }
-
-            if(items.isEmpty()){
-                //Get All Items From Server filter by category
-                this.getItems(Constants.DEFAULT_CATEGORY)
-            }else{
-                //Not request firebase item
-                this.loadView.isVisible = false
-                this.setProductRecyclerView(items)
-            }
-
             //Change the AppBar Name
             FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
         }
+
+        Log.v("vista", "OnViewCreated()")
     }
 
     override fun onCreateView(
@@ -95,127 +53,12 @@ class HomeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    private fun setCategoryRecyclerView(categories : MutableList<Category>){
-        categoryView.setHasFixedSize(true)
-        categoryAdapter = CategoryAdapter(categories, activity as AppCompatActivity)
-        categoryView.adapter = categoryAdapter
-    }
-
-    private fun setProductRecyclerView(items : MutableList<SingleMcItem>){
-        productView.setHasFixedSize(true)
-        productAdapter = ProductAdapter(items, activity as AppCompatActivity)
-        productView.adapter = productAdapter
-    }
-
     private fun bindComponents(activity: Activity){
-        this.loadView = activity.findViewById(R.id.load)
         this.qrButton = activity.findViewById(R.id.fab_qr)
         categoryView = activity.findViewById(R.id.rv_categories)
         productView = activity.findViewById(R.id.rv_products)
     }
 
-
-    /*This is caused because firebase return an ArrayList of element
-    * but kotlin compiler know element of instance Any?
-    */
-    @Suppress("UNCHECKED_CAST")
-    private fun getItems(selectedCategory : String) {
-        val db = Firebase.firestore
-        db.collection("item")
-            .get()
-            .addOnSuccessListener{
-                for(document in it){
-                    val pseudoCategory = document["category"] as DocumentReference
-                    val category = Category(pseudoCategory.id)
-
-                    val onlyName = items.stream().map { item -> item.getName() }.collect(Collectors.toList())
-
-                    if (!onlyName.contains(document["name"] as String)) {
-
-                        //SingleMcItem Attribute
-                        val ingredientsItem : MutableList<DocumentReference> = document["ingredients"] as MutableList<DocumentReference>
-                        val ingredients : MutableList<Ingredient> = mutableListOf()
-                        val name : String = document["name"] as String
-                        val image : String = document["image"] as String
-                        val imageDescription : String = document["imageDescription"] as String
-                        val singlePrice : Double = document["singlePrice"] as Double
-
-                        //Recover All Ingredient
-                        for(ingredient in ingredientsItem){
-                            //Recover Ingredient and Add on Ingredients list
-                            db.document(ingredient.path)
-                                .get()
-                                .addOnSuccessListener{ currentItem ->
-                                    val weight = (currentItem["weight"] as Long).toFloat()
-                                    val nameOfItem = currentItem["name"] as String
-                                    val imageOfItem = currentItem["image"] as String
-                                    val calories = (currentItem["calories"] as Long).toInt()
-                                    var modifiable = (currentItem["modifiable"] as Boolean?)
-                                    if(modifiable == null){
-                                        modifiable = false
-                                    }
-                                    ingredients.add(Ingredient(nameOfItem,imageOfItem,modifiable,weight,calories))
-                                }
-                        }
-
-                        //Add Ingredients On List
-                        items.add(SingleMcItem(name, image, imageDescription, singlePrice, category, ingredients))
-                    }
-                }
-            }
-            .addOnCompleteListener{
-                this.setProductRecyclerView(items.stream().filter{it.getCategory() == selectedCategory}.collect(Collectors.toList()))
-                this.loadView.isVisible = false
-            }
-            .addOnFailureListener{
-
-            }
-    }
-
-    private fun getAllCategories() {
-        val db = Firebase.firestore
-        db.collection("category")
-            .get()
-            .addOnSuccessListener {
-                for (document in it){
-                    categories.add(Category(document.id))
-                }
-            }
-            .addOnFailureListener{
-                Log.d("base", "Qualcosa e andato storto...", it)
-            }
-            .addOnCompleteListener {
-                //Add item to view
-                Log.d("item", "Setto le categorie")
-                this.setCategoryRecyclerView(categories)
-            }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if(activity != null){
-
-            //Bind All Components in View
-            this.bindComponents(activity as AppCompatActivity)
-
-            //Set all view listener
-            this.setAllListener()
-
-            this.loadView.isVisible = true
-            this.setCategoryRecyclerView(categories)
-
-            if(items.isEmpty()){
-                //Get All Items From Server filter by category
-                this.getItems(Constants.DEFAULT_CATEGORY)
-            }else{
-                this.loadView.isVisible = false
-                refreshProductView(Constants.DEFAULT_CATEGORY,activity as AppCompatActivity)
-            }
-
-            //Change the AppBar Name
-            FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
-        }
-    }
 
     private fun setAllListener(){
         this.qrButton.setOnClickListener {
@@ -239,5 +82,38 @@ class HomeFragment : Fragment() {
         } else {
             Toast.makeText(activity, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
         }
+    }
+
+    //This is use to updateView when user change category
+    companion object{
+        private lateinit var downloadManager: DownloadManager
+
+        fun refreshProductView(category: Category){
+            downloadManager.changeCurrentCategory(category)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(activity != null){
+            //Init the download manager
+            downloadManager = DownloadManager(this.productView,
+                this.categoryView,
+                Category(Constants.DEFAULT_CATEGORY),
+                this.activity as AppCompatActivity)
+        }
+
+        Log.v("vista", "OnResume()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.v("vista", "OnStop()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.v("vista", "OnDestroy()")
     }
 }

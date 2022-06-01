@@ -1,15 +1,17 @@
 package com.example.mcdonalds.controller
 
-import android.util.Log
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.R
+import com.example.mcdonalds.utils.MessageManager
 import java.util.stream.Collectors
 
-class HistoryAdapter(private val oldOrders : Map<String, List<String>>)
+class HistoryAdapter(private val oldOrders : Map<String, List<String>>, private var activity: Activity)
     : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -27,10 +29,12 @@ class HistoryAdapter(private val oldOrders : Map<String, List<String>>)
 
         holder.itemDetails.text = this.oldOrders[currentKey].toString()
 
-        Log.d("valore", "Sto settando gli elementi")
-
         holder.itemView.setOnClickListener {
-            Log.d("valore", "Posizione elemento : ${holder.layoutPosition}")
+            /* Replace Item whit old order item */
+            this.oldOrders[currentKey]?.let { it1 ->
+                MessageManager.displayReplaceOrderMessage(activity as AppCompatActivity,
+                    *it1.toTypedArray())
+            }
         }
     }
 

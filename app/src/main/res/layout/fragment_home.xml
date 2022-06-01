@@ -59,17 +59,11 @@
             android:layout_marginBottom="16dp"
             android:layoutAnimation="@anim/cart_anim"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toBottomOf="@+id/load"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2"
             app:spanCount="2" />
-
-        <pl.droidsonroids.gif.GifImageView
-            android:id="@+id/load"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/splash"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

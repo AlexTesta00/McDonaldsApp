@@ -3,11 +3,12 @@ package com.example.mcdonalds.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.ActionBar
 import com.example.mcdonalds.R
 import com.example.mcdonalds.fragments.CartFragment
 import com.example.mcdonalds.fragments.HomeFragment
-import com.example.mcdonalds.fragments.ScanFragment
+import com.example.mcdonalds.fragments.HistoryFragment
 import com.example.mcdonalds.model.McOrder
 import com.example.mcdonalds.model.McUser
 import com.example.mcdonalds.utils.FragmentUtils
@@ -22,7 +23,7 @@ class HomeActivity : AppCompatActivity(){
     private lateinit var firebaseAuth: FirebaseAuth
     private val homeFragment : HomeFragment = HomeFragment()
     private val cartFragment : CartFragment = CartFragment()
-    private val scanFragment : ScanFragment = ScanFragment()
+    private val scanFragment : HistoryFragment = HistoryFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,5 +84,15 @@ class HomeActivity : AppCompatActivity(){
     private fun setCustomAppBar(){
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.setCustomView(R.layout.custom_app_bar)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.v("vista", "OnResumeActivity()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.v("vista", "OnStopActivity()")
     }
 }

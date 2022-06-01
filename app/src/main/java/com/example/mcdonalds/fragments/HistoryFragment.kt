@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-class ScanFragment : Fragment() {
+class HistoryFragment : Fragment() {
 
     private lateinit var recycler : RecyclerView
     private lateinit var adapter : HistoryAdapter
@@ -49,7 +49,7 @@ class ScanFragment : Fragment() {
     private fun setRecyclerAdapter(oldOrders : Map<String, List<String>>){
         Log.d("valore", "Setto la recycler view")
         Log.d("valore", "Recycler Items : $oldOrders")
-        this.adapter = HistoryAdapter(oldOrders)
+        this.adapter = HistoryAdapter(oldOrders, activity as AppCompatActivity)
         this.recycler.adapter = this.adapter
     }
 

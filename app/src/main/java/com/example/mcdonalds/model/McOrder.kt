@@ -2,7 +2,6 @@ package com.example.mcdonalds.model
 
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
 import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.stream.Collectors
@@ -98,9 +97,15 @@ class McOrder {
             return this.getAllItems().keys.stream().map{it.getName()}.collect(Collectors.toList())
         }
 
-        fun cloneOrder(mcItems : MutableMap<McItem, Int>) {
-            this.items.clear()
-            this.items = mcItems
+        fun cloneOrder(vararg itemName : String) {
+            this.generateId() //Generate New Id for Order
+
+            var mcItems = DownloadManager.getItemsFromName(*itemName) //Get Items From Name
+            this.items.clear() //Clear Cart
+
+            /*Transform List in to Mutable Map
+            * Example : {McChiken=1, ...}*/
+            this.items = mcItems.associateWith { 1 }.toMutableMap()
         }
 
         fun cancelOrder() {

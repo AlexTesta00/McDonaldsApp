@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.mcdonalds.R
+import com.example.mcdonalds.model.McOrder
 
 class MessageManager {
 
@@ -77,6 +78,23 @@ class MessageManager {
                 .setTitle("Ops! Qualcosa è andato storto...")
                 .setMessage("Qusta funzione al momento non è disponibile, riprova")
                 .setPositiveButton("Ho capito"){ _, _ -> }
+                .setCancelable(false)
+                .show()
+        }
+
+        fun displayReplaceOrderMessage(activity: Activity, vararg itemName : String){
+            AlertDialog.Builder(activity)
+                .setTitle("Clona Ordine")
+                .setMessage("Sei sicuro di voler replicare l'ordine?")
+                .setPositiveButton(R.string.confirm){ _, _ ->
+                    McOrder.cloneOrder(*itemName)
+                    Toast.makeText(activity,
+                                    "Tutti gli elementi sono stati aggiunti al carrello",
+                                    Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton(R.string.not_confirm){_,_ -> {
+
+                }}
                 .setCancelable(false)
                 .show()
         }
