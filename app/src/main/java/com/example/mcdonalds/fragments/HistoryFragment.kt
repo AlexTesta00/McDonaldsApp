@@ -64,9 +64,10 @@ class HistoryFragment : Fragment() {
                     val value = snapshot.value as Map<String, List<String>>
 
                     //Set the item on recycler view
-                    setRecyclerAdapter(value)
+                    if (activity != null){
+                        setRecyclerAdapter(value)
+                    }
 
-                    //Log.d("valore", value.toString());
                 }else{
                     //Todo implement no order
                 }

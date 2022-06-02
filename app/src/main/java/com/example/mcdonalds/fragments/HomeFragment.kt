@@ -87,8 +87,10 @@ class HomeFragment : Fragment() {
     //This is use to updateView when user change category
     companion object{
         private lateinit var downloadManager: DownloadManager
+        var currentCategory : Category = Category(Constants.DEFAULT_CATEGORY)
 
         fun refreshProductView(category: Category){
+            currentCategory = category
             downloadManager.changeCurrentCategory(category)
         }
     }
@@ -100,7 +102,7 @@ class HomeFragment : Fragment() {
             //Init the download manager
             downloadManager = DownloadManager(this.productView,
                 this.categoryView,
-                Category(Constants.DEFAULT_CATEGORY),
+                Category(currentCategory.name),
                 this.activity as AppCompatActivity)
         }
 
@@ -109,11 +111,13 @@ class HomeFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        //Todo Save Current Category
         Log.v("vista", "OnStop()")
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        activity?.finish()
         Log.v("vista", "OnDestroy()")
     }
 }
