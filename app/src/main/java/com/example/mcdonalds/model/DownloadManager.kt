@@ -1,10 +1,16 @@
 package com.example.mcdonalds.model
 
+import android.app.Activity
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.controller.CategoryAdapter
 import com.example.mcdonalds.controller.ProductAdapter
+import com.example.mcdonalds.utils.MessageManager
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -181,4 +187,41 @@ class DownloadManager (private var itemsView: RecyclerView,
         this.updateItems(this.itemsView, newCategory)
     }
 
+
+    fun recoverHistory(idOrder : String, activity : Activity){
+        val database = Firebase.database
+        val reference = database.reference
+
+
+        reference.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.value != null){
+                    val value = snapshot.value as Map<String, Map<String,List<String>>>
+                    val containsKey = value.values.stream().map{it.keys}.filter{it.contains(idOrder)}.count()
+
+                    if(containsKey > 0){
+                        //Get List of Items
+                        val items = value.values.stream()
+                                                .map{ it[idOrder]}
+                                                .collect(Collectors.toList())
+
+
+                        MessageManager.displayReplaceOrderMessage(activity as AppCompatActivity,
+                            idOrder,
+                            *items[0]!!.toTypedArray())
+
+                    }else{
+                        //Todo implement not contain key
+                    }
+                }else{
+                    //Todo implement no order
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
 }

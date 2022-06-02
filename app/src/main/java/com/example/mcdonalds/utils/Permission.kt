@@ -35,7 +35,7 @@ class Permission {
                     locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         }
 
-        fun isCameraEmabled(context: Context) : Boolean{
+        fun isCameraEnabled(context: Context) : Boolean{
             return (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
         }
     }

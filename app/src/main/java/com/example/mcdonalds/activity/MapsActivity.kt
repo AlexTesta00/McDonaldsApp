@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentContainerView
-import com.example.mcdonalds.BuildConfig
 import com.example.mcdonalds.R
 import com.example.mcdonalds.databinding.ActivityMapsBinding
 import com.example.mcdonalds.fragments.CompleteOrderFragment
@@ -29,8 +28,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -42,7 +39,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
     private lateinit var mapView : FragmentContainerView
     private lateinit var question : TextView
     private lateinit var binding: ActivityMapsBinding
-    private lateinit var placeClient : PlacesClient
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var select : Button
 
@@ -61,10 +57,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
         this.bindComponents()
         this.setAllListener()
 
-        //Places Info
-        Places.initialize(this, BuildConfig.MAPS_API_KEY)
-        this.placeClient = Places.createClient(this)
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -79,7 +71,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private fun setAllListener(){
         this.select.setOnClickListener {
-            //McOrder.setLocationInfo(McLocation("McDonald's Via Flaminia", LatLng(40.00, 12.00), true))
             this.hideAllComponents()
             FragmentUtils.changeToFinishFragment(this@MapsActivity, CompleteOrderFragment(), "CompleteOrderFragment")
             McOrder.sendOrder()
@@ -144,13 +135,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
             if(Permission.locationIsEnabled(this)){
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener {
                     val location = it.result
-                    if(location == null){
-                        Log.d("posizione", "Richiedo una request update")
-                        this.fusedLocationProviderClient.requestLocationUpdates(this.locationRequest(), this.locationCallBack(), Looper.getMainLooper())
-                        this.fusedLocationProviderClient.removeLocationUpdates(this.locationCallBack())
-                    }else{
-                        updateMapView(LatLng(location.latitude, location.longitude))
-                    }
+                    this.fusedLocationProviderClient.requestLocationUpdates(this.locationRequest(), this.locationCallBack(), Looper.getMainLooper())
+                    this.fusedLocationProviderClient.removeLocationUpdates(this.locationCallBack())
+                    updateMapView(LatLng(location.latitude, location.longitude))
                 }
             }else{
                 MessageManager.displayNoGpsEnableMessage(this@MapsActivity)

@@ -80,7 +80,7 @@ class HomeFragment : Fragment() {
         if (result.contents == null) {
             Toast.makeText(activity, "Nessun codice QR valido rilevato", Toast.LENGTH_LONG).show()
         } else {
-            Toast.makeText(activity, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
+            downloadManager.recoverHistory(result.contents, activity as AppCompatActivity)
         }
     }
 

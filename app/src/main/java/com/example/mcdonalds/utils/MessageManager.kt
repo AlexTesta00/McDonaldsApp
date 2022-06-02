@@ -5,10 +5,13 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.provider.Settings
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.mcdonalds.R
+import com.example.mcdonalds.activity.MapsActivity
 import com.example.mcdonalds.model.McOrder
+import com.example.mcdonalds.model.QRGenerator
 
 class MessageManager {
 
@@ -19,7 +22,7 @@ class MessageManager {
                 .setTitle("GPS Disattivato")
                 .setMessage("Il gps risulta disabilitato, vuoi attivarlo?")
                 .setPositiveButton(R.string.confirm){ _, _ ->
-                    activity.startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+                    activity.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
                 .setNegativeButton(R.string.not_confirm){_,_ ->
                     Toast.makeText(activity, "La mappa è stata disattivata :(", Toast.LENGTH_SHORT).show()
@@ -82,7 +85,7 @@ class MessageManager {
                 .show()
         }
 
-        fun displayReplaceOrderMessage(activity: Activity, vararg itemName : String){
+        fun displayReplaceOrderMessage(activity: Activity, orderId : String, vararg itemName : String){
             AlertDialog.Builder(activity)
                 .setTitle("Clona Ordine")
                 .setMessage("Sei sicuro di voler replicare l'ordine?")
@@ -92,10 +95,24 @@ class MessageManager {
                                     "Tutti gli elementi sono stati aggiunti al carrello",
                                     Toast.LENGTH_SHORT).show()
                 }
-                .setNegativeButton(R.string.not_confirm){_,_ -> {
-
-                }}
+                .setNegativeButton(R.string.not_confirm){_,_ -> }
+                .setNeutralButton("Genera QR"){_,_ -> this.displayId(activity,orderId)}
                 .setCancelable(false)
+                .show()
+        }
+
+        private fun displayId(activity: Activity,orderId: String){
+            val qr = QRGenerator().generateQrFromString(orderId)
+            val inflater = activity.layoutInflater
+            val view = inflater.inflate(R.layout.alert_dialog_whit_image, null)
+            val imageView = view.findViewById<ImageView>(R.id.img_alert_dialog)
+            imageView.setImageBitmap(qr)
+            AlertDialog.Builder(activity)
+                .setTitle("Clona Ordine")
+                .setMessage("Sei sicuro di voler replicare l'ordine?")
+                .setPositiveButton(R.string.okay){ _, _ -> }
+                .setCancelable(false)
+                .setView(view)
                 .show()
         }
     }

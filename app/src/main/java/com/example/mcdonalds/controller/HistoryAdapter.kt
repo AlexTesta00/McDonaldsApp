@@ -33,6 +33,7 @@ class HistoryAdapter(private val oldOrders : Map<String, List<String>>, private 
             /* Replace Item whit old order item */
             this.oldOrders[currentKey]?.let { it1 ->
                 MessageManager.displayReplaceOrderMessage(activity as AppCompatActivity,
+                    currentKey,
                     *it1.toTypedArray())
             }
         }
