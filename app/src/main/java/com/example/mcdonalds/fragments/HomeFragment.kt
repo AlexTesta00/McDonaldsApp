@@ -40,9 +40,10 @@ class HomeFragment : Fragment() {
 
             //Change the AppBar Name
             FragmentUtils.changeAppBarName(activity as AppCompatActivity, getString(R.string.home))
+
+            Log.v("vista", "OnViewCreated()")
         }
 
-        Log.v("vista", "OnViewCreated()")
     }
 
     override fun onCreateView(
@@ -99,25 +100,14 @@ class HomeFragment : Fragment() {
         super.onResume()
 
         if(activity != null){
+            Log.v("vista", "OnResume() : Setto i recycler")
             //Init the download manager
             downloadManager = DownloadManager(this.productView,
                 this.categoryView,
                 Category(currentCategory.name),
                 this.activity as AppCompatActivity)
+        }else{
+            Log.v("vista", "OnResume() : Attivita nulla")
         }
-
-        Log.v("vista", "OnResume()")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        //Todo Save Current Category
-        Log.v("vista", "OnStop()")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        activity?.finish()
-        Log.v("vista", "OnDestroy()")
     }
 }

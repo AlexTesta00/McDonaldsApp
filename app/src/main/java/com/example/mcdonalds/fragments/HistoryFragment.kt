@@ -55,7 +55,7 @@ class HistoryFragment : Fragment() {
 
     private fun getHistory(){
         val database = Firebase.database
-        val reference = database.getReference(McOrder.getUserInfo()!!.email.split("@")[0])
+        val reference = database.getReference(McOrder.user!!.email.split("@")[0])
 
 
         reference.addValueEventListener(object: ValueEventListener{

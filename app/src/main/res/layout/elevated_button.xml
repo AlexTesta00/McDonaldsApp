@@ -3,9 +3,10 @@
     android:id="@+id/btn_category"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Testo"
+    android:text="@string/example_text"
     android:textSize="16sp"
     android:layout_marginLeft="8dp"
+    android:textAppearance="?attr/textAppearanceLabelLarge"
     style="@style/Widget.Material3.Button.ElevatedButton">
 
 </Button>

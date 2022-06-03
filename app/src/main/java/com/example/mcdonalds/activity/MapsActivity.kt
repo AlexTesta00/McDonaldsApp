@@ -31,8 +31,11 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 
 
+@Suppress("OPT_IN_IS_NOT_ENABLED")
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private lateinit var mMap: GoogleMap
@@ -189,32 +192,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
         Log.d("posizione", "Setto la posizione")
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun getPlaceDetailsFromCoordinates(point : LatLng){
-        val db = Firebase.firestore
-        var mcLocation : McLocation
-        db.collection("places")
-            .get()
-            .addOnSuccessListener {
-                for (document in it){
-                    val name = document["name"] as String
-                    val coordinates = LatLng(document["latitude"] as Double,document["longitude"] as Double)
-                    if(this.computeModule(coordinates, point) <= PRECISION_MODULE){
-                        mcLocation = McLocation(name, coordinates)
-                        Snackbar.make(this.mapView, "$name è stato selezionato", Snackbar.LENGTH_SHORT).show()
-                        McOrder.setLocationInfo(mcLocation)
+        GlobalScope.launch(Dispatchers.IO){
+            val db = Firebase.firestore
+            var mcLocation : McLocation? = null
+            var name  = ""
+            db.collection("places")
+                .get()
+                .addOnSuccessListener {
+                    for (document in it){
+                        name = document["name"] as String
+                        val coordinates = LatLng(document["latitude"] as Double,document["longitude"] as Double)
+                        if(computeModule(coordinates, point) <= PRECISION_MODULE){
+                            mcLocation = McLocation(name, coordinates)
 
-                        //Make button select place enabled
-                        this.select.isEnabled = true
-                    }else{
-                        Toast.makeText(this@MapsActivity, "Questo luogo al momento non è disponibile", Toast.LENGTH_SHORT).show()
-                        //Make button select place disabled
-                        this.select.isEnabled = false
+                            Log.d("location", "Setto la location $mcLocation")
+                            McOrder.location = mcLocation!!
+                        }
                     }
                 }
+                .addOnFailureListener {
+                    MessageManager.displayNoPositionComputable(this@MapsActivity)
+                }
+                .await()
+
+            withContext(Dispatchers.Main){
+                if(mcLocation != null){
+                    Snackbar.make(mapView, "$name è stato selezionato", Snackbar.LENGTH_SHORT).show()
+                    //Make button select place enabled
+                    select.isEnabled = true
+                }else{
+                    //Make button select place disabled
+                    select.isEnabled = false
+                    Toast.makeText(this@MapsActivity, "Questo luogo al momento non è disponibile", Toast.LENGTH_SHORT).show()
+                }
             }
-            .addOnFailureListener {
-                MessageManager.displayNoPositionComputable(this)
-            }
+        }
     }
 
     private fun computeModule(p0 : LatLng, p1 : LatLng) : Int{
@@ -227,5 +241,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
         endPoint.longitude = p1.longitude
 
         return startPoint.distanceTo(endPoint).toInt()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(McOrder.location != null){
+            this.hideAllComponents()
+            FragmentUtils.changeToFinishFragment(this@MapsActivity, CompleteOrderFragment(), "CompleteOrderFragment")
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        this.fusedLocationProviderClient.removeLocationUpdates(this.locationCallBack())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        this.fusedLocationProviderClient.removeLocationUpdates(this.locationCallBack())
     }
 }

@@ -10,16 +10,12 @@ import kotlin.random.Random
 class McOrder {
 
     companion object {
-        private lateinit var user : McUser
-        private lateinit var location : McLocation
         private var items : MutableMap<McItem, Int> = mutableMapOf()
         private val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        private var id : String = this.generateId()
+        var user : McUser? = null
+        var location : McLocation? = null
+        var id : String = this.generateId()
         private const val STRING_LENGTH = 4
-
-        fun getId(): String {
-            return this.id
-        }
 
         fun getAllItems(): MutableMap<McItem, Int> {
             return Collections.unmodifiableMap(this.items)
@@ -37,28 +33,6 @@ class McOrder {
 
             }
             return price
-        }
-
-        fun setUser(user: McUser){
-            this.user = user
-        }
-
-        fun getUserInfo(): McUser? {
-            if(this.user != null){
-                return this.user
-            }
-            return null
-        }
-
-        fun setLocationInfo(location: McLocation){
-            this.location = location
-        }
-
-        fun getLocationInfo(): McLocation? {
-            if(this.location != null){
-                return this.location
-            }
-            return null
         }
 
         fun addItem(item: McItem, value : Int){
@@ -81,16 +55,18 @@ class McOrder {
         }
 
         fun sendOrder() {
-            if(user != null){
+            if(user != null && location != null){
                 this.writeNewOrder()
+                this.deleteItem(*items.keys.toTypedArray())
+                this.location = null
             }else{
-                throw IllegalStateException("The user isn't set")
+                throw IllegalStateException("The user isn't set or Location not set")
             }
         }
 
         private fun writeNewOrder(){
             val database = Firebase.database.reference
-            database.child(getUserInfo()!!.email.split("@")[0]).child(getId()).setValue(this.getOnlyItemsName())
+            database.child(this.user!!.email.split("@")[0]).child(id).setValue(this.getOnlyItemsName())
         }
 
         private fun getOnlyItemsName() : MutableList<String>{
@@ -100,7 +76,7 @@ class McOrder {
         fun cloneOrder(vararg itemName : String) {
             this.generateId() //Generate New Id for Order
 
-            var mcItems = DownloadManager.getItemsFromName(*itemName) //Get Items From Name
+            val mcItems = DownloadManager.getItemsFromName(*itemName) //Get Items From Name
             this.items.clear() //Clear Cart
 
             /*Transform List in to Mutable Map

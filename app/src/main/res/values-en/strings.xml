@@ -12,4 +12,7 @@
     <string name="add_quantity">Add Quantity</string>
     <string name="pay">Paga %1$s €</string>
     <string name="not_elements_found">No Element\'s Found</string>
+    <string name="example_text">Text</string>
+    <string name="mc_donalds_item">Oggetto McDonalds</string>
+    <string name="title_card">Nome Oggetto</string>
 </resources>

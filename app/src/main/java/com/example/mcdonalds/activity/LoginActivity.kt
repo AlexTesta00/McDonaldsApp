@@ -124,7 +124,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 //Set the user in current order
-                McOrder.setUser(McUser(email!!, uid!!))
+                McOrder.user = McUser(email!!, uid!!)
                 Log.d("user", "Welcome $email")
 
                 //Start Main Activity

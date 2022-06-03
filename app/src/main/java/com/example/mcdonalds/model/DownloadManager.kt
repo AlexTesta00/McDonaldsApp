@@ -34,6 +34,7 @@ class DownloadManager (private var itemsView: RecyclerView,
 
         //Download All Categories
         this.downloadCategories()
+
     }
 
     companion object{
@@ -128,9 +129,6 @@ class DownloadManager (private var itemsView: RecyclerView,
                     }
                     .addOnFailureListener {
                         throw Exception("Download Items Failed : $it")
-                    }
-                    .addOnSuccessListener {
-                        Log.d("data", "Finito Items")
                     }.await()
 
                 withContext(Dispatchers.Main){
@@ -156,9 +154,6 @@ class DownloadManager (private var itemsView: RecyclerView,
                     .addOnFailureListener{
                         throw Exception("Download Category Failed : $it")
                     }
-                    .addOnSuccessListener {
-                        Log.d("data", "Finito Categories")
-                    }
                     .await()
 
                 withContext(Dispatchers.Main){
@@ -175,12 +170,14 @@ class DownloadManager (private var itemsView: RecyclerView,
     }
 
     private fun updateCategories(recyclerView: RecyclerView){
-        recyclerView.adapter = CategoryAdapter(categories)
+        val adapter = CategoryAdapter(categories)
+        recyclerView.adapter = adapter
     }
 
     private fun updateItems(recyclerView: RecyclerView, category: Category){
-        recyclerView.adapter = ProductAdapter(this.getItemsByCategory(category),
-                                              this.currentActivity)
+        val adapter = ProductAdapter(this.getItemsByCategory(category),
+                                    this.currentActivity)
+        recyclerView.adapter = adapter
     }
 
     fun changeCurrentCategory(newCategory: Category){

@@ -3,7 +3,6 @@ package com.example.mcdonalds.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.ActionBar
 import com.example.mcdonalds.R
 import com.example.mcdonalds.fragments.CartFragment
@@ -29,18 +28,11 @@ class HomeActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //Check if User are auth
-        this.firebaseAuth = FirebaseAuth.getInstance()
-        this.checkUser()
-
         //Attach view components
         this.attachAllComponents()
 
         //Activate All Listener
         this.setAllListener(this@HomeActivity)
-
-        //Set Id
-        McOrder.changeId()
 
         //Set the custom AppBar
         this.setCustomAppBar()
@@ -56,7 +48,7 @@ class HomeActivity : AppCompatActivity(){
             startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
             finish()
         }else{
-            McOrder.setUser(McUser(firebaseUser.email!!, firebaseUser.uid))
+            McOrder.user = McUser(firebaseUser.email!!, firebaseUser.uid)
         }
     }
 
@@ -88,11 +80,18 @@ class HomeActivity : AppCompatActivity(){
 
     override fun onResume() {
         super.onResume()
-        Log.v("vista", "OnResumeActivity()")
-    }
 
-    override fun onStop() {
-        super.onStop()
-        Log.v("vista", "OnStopActivity()")
+        //Check if User are auth
+        this.firebaseAuth = FirebaseAuth.getInstance()
+        this.checkUser()
+
+        //Set Id
+        McOrder.changeId()
+
+        //Return to Home View
+        FragmentUtils.changeCurrentFragment(this@HomeActivity,homeFragment, resources.getString(
+            R.string.home
+        ))
+
     }
 }

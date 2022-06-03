@@ -28,12 +28,6 @@ class CompleteOrderFragment : Fragment() {
         if(activity != null){
             this.bindComponent(activity as AppCompatActivity)
             this.setAllListener()
-            this.generateMcQrCode()
-            this.setMcOrderId()
-            this.setMcName()
-
-            //Remove Order Info
-            McOrder.cancelOrder()
         }
     }
 
@@ -60,15 +54,30 @@ class CompleteOrderFragment : Fragment() {
     }
 
     private fun setMcOrderId(){
-        this.mcId.text = McOrder.getId()
+        this.mcId.text = McOrder.id
     }
 
     private fun setMcName(){
-        this.mcName.text = McOrder.getLocationInfo()!!.name
+        if(McOrder.location != null){
+            this.mcName.text = McOrder.location!!.name
+        }
     }
 
     private fun generateMcQrCode(){
         val qrGenerator = QRGenerator()
-        this.mcQrCode.setImageBitmap(qrGenerator.generateQrFromString(McOrder.getId()))
+        this.mcQrCode.setImageBitmap(qrGenerator.generateQrFromString(McOrder.id))
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(activity != null){
+            this.generateMcQrCode()
+            this.setMcOrderId()
+            this.setMcName()
+
+            //Remove Order Info
+            McOrder.cancelOrder()
+        }
     }
 }

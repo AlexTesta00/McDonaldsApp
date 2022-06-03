@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="16dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="70dp"
         android:orientation="vertical">
 
         <!-- Media -->
         <ImageView
             android:id="@+id/card_menu_image"
-            android:layout_width="match_parent"
-            android:layout_height="108dp"
-            app:srcCompat="@drawable/ic_mcdonalds"
-            android:scaleType="fitCenter"
+            android:layout_width="100dp"
+            android:layout_height="70dp"
             android:contentDescription="@string/mc_donalds_item"
-            />
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_mcdonalds" />
 
         <!-- Title, secondary and supporting text -->
         <TextView
-            android:gravity="center"
             android:id="@+id/card_menu_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_card"
-            android:textSize="18sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
             android:padding="16dp"
+            android:text="@string/title_card"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            />
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/card_menu_image"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </com.google.android.material.card.MaterialCardView>
