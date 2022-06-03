@@ -1,7 +1,6 @@
 package com.example.mcdonalds.model
 
 import android.app.Activity
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mcdonalds.controller.CategoryAdapter
@@ -21,6 +20,8 @@ import java.lang.IllegalStateException
 import java.util.stream.Collectors
 
 
+@Suppress("OPT_IN_IS_NOT_ENABLED")
+@OptIn(DelicateCoroutinesApi::class)
 class DownloadManager (private var itemsView: RecyclerView,
                        private var categoryView: RecyclerView,
                        private var defaultCategory : Category,
@@ -113,7 +114,6 @@ class DownloadManager (private var itemsView: RecyclerView,
                                             )
                                         }
                                 }
-                                Log.d("data", "Aggiungo $name")
                                 //Add Ingredients On List
                                 mcItems.add(
                                     SingleMcItem(
@@ -169,7 +169,7 @@ class DownloadManager (private var itemsView: RecyclerView,
         return mcItems.stream().filter{it.getCategory() == category.name}.collect(Collectors.toList())
     }
 
-    private fun updateCategories(recyclerView: RecyclerView){
+    private infix fun updateCategories(recyclerView: RecyclerView){
         val adapter = CategoryAdapter(categories)
         recyclerView.adapter = adapter
     }
@@ -184,7 +184,7 @@ class DownloadManager (private var itemsView: RecyclerView,
         this.updateItems(this.itemsView, newCategory)
     }
 
-
+    @Suppress("UNCHECKED_CAST")
     fun recoverHistory(idOrder : String, activity : Activity){
         val database = Firebase.database
         val reference = database.reference
@@ -208,10 +208,8 @@ class DownloadManager (private var itemsView: RecyclerView,
                             *items[0]!!.toTypedArray())
 
                     }else{
-                        //Todo implement not contain key
+                        MessageManager.displayNoHolderOrderPresent(activity)
                     }
-                }else{
-                    //Todo implement no order
                 }
             }
 

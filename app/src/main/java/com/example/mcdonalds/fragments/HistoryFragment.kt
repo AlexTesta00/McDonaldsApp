@@ -68,8 +68,6 @@ class HistoryFragment : Fragment() {
                         setRecyclerAdapter(value)
                     }
 
-                }else{
-                    //Todo implement no order
                 }
             }
 

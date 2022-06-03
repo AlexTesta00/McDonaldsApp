@@ -1,10 +1,12 @@
 package com.example.mcdonalds.activity
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.mcdonalds.R
 import com.example.mcdonalds.model.McOrder
 import com.example.mcdonalds.model.McUser
@@ -26,7 +28,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleButton : SignInButton
 
     private companion object{
-        private const val RC_SIGN_IN = 100
         private const val TAG = "GOOGLE_SIGN_IN"
     }
 
@@ -73,17 +74,15 @@ class LoginActivity : AppCompatActivity() {
     private fun setAllListener(){
         this.googleButton.setOnClickListener{
             Log.d(TAG, "onCreate: GoogleSignIn")
-            startActivityForResult(Intent(googleSignInClient.signInIntent), RC_SIGN_IN)
+            singInResult.launch(Intent(googleSignInClient.signInIntent))
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        //Result launched from sign-in intent
-        if(requestCode == RC_SIGN_IN){
+    private var singInResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            Log.d(TAG, "${it.resultCode}")
+        if(it.resultCode == Activity.RESULT_OK){
             Log.d(TAG, "OnActivityResult: google sign-in activity result")
-            val accountTask = GoogleSignIn.getSignedInAccountFromIntent(data)
+            val accountTask = GoogleSignIn.getSignedInAccountFromIntent(it.data)
             try {
                 //Sign-in success, auth whit firebase
                 val account = accountTask.getResult(ApiException::class.java)

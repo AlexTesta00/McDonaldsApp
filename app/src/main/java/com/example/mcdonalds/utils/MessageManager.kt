@@ -101,6 +101,15 @@ class MessageManager {
                 .show()
         }
 
+        fun displayNoHolderOrderPresent(activity: Activity){
+            AlertDialog.Builder(activity)
+                .setTitle("Ops! Qualcosa è andato storto...")
+                .setMessage("L'ordine non è presente nei nostri database")
+                .setPositiveButton("Ho capito"){ _, _ -> }
+                .setCancelable(false)
+                .show()
+        }
+
         private fun displayId(activity: Activity,orderId: String){
             val qr = QRGenerator().generateQrFromString(orderId)
             val inflater = activity.layoutInflater
@@ -115,5 +124,6 @@ class MessageManager {
                 .setView(view)
                 .show()
         }
+
     }
 }

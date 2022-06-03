@@ -17,8 +17,8 @@ import com.google.firebase.messaging.RemoteMessage
 
 class FireBaseCloudMessagingService : FirebaseMessagingService() {
 
-    private val NOTIFICATION_CHANNEL_ID = "com.example.mcdonalds"
-    private val NOTIFICATION_ID = 100
+    private val notificationChannelId = "com.example.mcdonalds"
+    private val notificationId = 100
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
@@ -50,9 +50,9 @@ class FireBaseCloudMessagingService : FirebaseMessagingService() {
         val notification: Notification
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+            notification = NotificationCompat.Builder(context, notificationChannelId)
                 .setOngoing(true)
-                .setSmallIcon(getNotificationIcon())
+                .setSmallIcon(R.drawable.ic_mcdonalds)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
@@ -65,15 +65,15 @@ class FireBaseCloudMessagingService : FirebaseMessagingService() {
                 Context.NOTIFICATION_SERVICE
             ) as NotificationManager
             val notificationChannel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
+                notificationChannelId,
                 title,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(notificationChannel)
-            notificationManager.notify(NOTIFICATION_ID, notification)
+            notificationManager.notify(notificationId, notification)
         } else {
             notification = NotificationCompat.Builder(context)
-                .setSmallIcon(getNotificationIcon())
+                .setSmallIcon(R.drawable.ic_mcdonalds)
                 .setAutoCancel(true)
                 .setContentText(message)
                 .setContentIntent(pendingIntent)
@@ -82,14 +82,8 @@ class FireBaseCloudMessagingService : FirebaseMessagingService() {
             val notificationManager = context.getSystemService(
                 Context.NOTIFICATION_SERVICE
             ) as NotificationManager
-            notificationManager.notify(NOTIFICATION_ID, notification)
+            notificationManager.notify(notificationId, notification)
         }
-    }
-
-    private fun getNotificationIcon(): Int {
-        val useWhiteIcon =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        return if (useWhiteIcon) R.mipmap.ic_brand else R.mipmap.ic_brand_round
     }
 
 }

@@ -1,13 +1,11 @@
 package com.example.mcdonalds.utils
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 class Permission {
