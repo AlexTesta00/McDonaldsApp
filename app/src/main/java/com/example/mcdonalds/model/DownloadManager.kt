@@ -186,37 +186,39 @@ class DownloadManager (private var itemsView: RecyclerView,
 
     @Suppress("UNCHECKED_CAST")
     fun recoverHistory(idOrder : String, activity : Activity){
-        val database = Firebase.database
-        val reference = database.reference
+        GlobalScope.launch(Dispatchers.IO) {
+            val database = Firebase.database
+            val reference = database.reference
 
 
-        reference.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.value != null){
-                    val value = snapshot.value as Map<String, Map<String,List<String>>>
-                    val containsKey = value.values.stream().map{it.keys}.filter{it.contains(idOrder)}.count()
+            reference.addValueEventListener(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if(snapshot.value != null){
+                        val value = snapshot.value as Map<String, Map<String,List<String>>>
+                        val containsKey = value.values.stream().map{it.keys}.filter{it.contains(idOrder)}.count()
 
-                    if(containsKey > 0){
-                        //Get List of Items
-                        val items = value.values.stream()
-                                                .map{ it[idOrder]}
-                                                .collect(Collectors.toList())
+                        if(containsKey > 0){
+                            //Get List of Items
+                            val items = value.values.stream()
+                                .map{ it[idOrder]}
+                                .collect(Collectors.toList())
 
 
-                        MessageManager.displayReplaceOrderMessage(activity as AppCompatActivity,
-                            idOrder,
-                            *items[0]!!.toTypedArray())
+                            MessageManager.displayReplaceOrderMessage(activity as AppCompatActivity,
+                                idOrder,
+                                *items[0]!!.toTypedArray())
 
-                    }else{
-                        MessageManager.displayNoHolderOrderPresent(activity)
+                        }else{
+                            MessageManager.displayNoHolderOrderPresent(activity)
+                        }
                     }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
+                override fun onCancelled(error: DatabaseError) {
 
-            }
+                }
 
-        })
+            })
+        }
     }
 }

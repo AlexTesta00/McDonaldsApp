@@ -74,7 +74,7 @@ class McOrder {
         }
 
         fun cloneOrder(vararg itemName : String) {
-            this.generateId() //Generate New Id for Order
+            this.id = this.generateId() //Generate New Id for Order
 
             val mcItems = DownloadManager.getItemsFromName(*itemName) //Get Items From Name
             this.items.clear() //Clear Cart

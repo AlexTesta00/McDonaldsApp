@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.mcdonalds.R
-import com.example.mcdonalds.activity.MapsActivity
 import com.example.mcdonalds.model.McOrder
 import com.example.mcdonalds.model.QRGenerator
 

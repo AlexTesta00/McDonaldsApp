@@ -75,6 +75,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
     private fun setAllListener(){
         this.select.setOnClickListener {
             this.hideAllComponents()
+            Log.d("finish", "Cambio to finishFragment")
             FragmentUtils.changeToFinishFragment(this@MapsActivity, CompleteOrderFragment(), "CompleteOrderFragment")
             McOrder.sendOrder()
         }

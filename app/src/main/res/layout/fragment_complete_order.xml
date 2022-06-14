@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
-            android:text="McDonal'd Name"
+            android:text="McDonald's Via Flaminia"
             android:textColor="@color/green"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/img_qr_code"
