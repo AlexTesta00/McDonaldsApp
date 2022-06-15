@@ -52,18 +52,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMapsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        if(!Permission.checkNetworkIsEnabled(this@MapsActivity)){
+            MessageManager.displayNoNetworkEnabled(this@MapsActivity)
+        }else{
+            binding = ActivityMapsBinding.inflate(layoutInflater)
+            setContentView(binding.root)
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        this.bindComponents()
-        this.setAllListener()
+            this.bindComponents()
+            this.setAllListener()
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+            val mapFragment = supportFragmentManager
+                .findFragmentById(R.id.map) as SupportMapFragment
+            mapFragment.getMapAsync(this)
+        }
     }
 
     private fun bindComponents(){
@@ -74,10 +78,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private fun setAllListener(){
         this.select.setOnClickListener {
-            this.hideAllComponents()
-            Log.d("finish", "Cambio to finishFragment")
-            FragmentUtils.changeToFinishFragment(this@MapsActivity, CompleteOrderFragment(), "CompleteOrderFragment")
-            McOrder.sendOrder()
+            if(!Permission.checkNetworkIsEnabled(this@MapsActivity)){
+                MessageManager.displayNoNetworkEnabled(this@MapsActivity)
+            }else{
+                this.hideAllComponents()
+                Log.d("finish", "Cambio to finishFragment")
+                FragmentUtils.changeToFinishFragment(this@MapsActivity, CompleteOrderFragment(), "CompleteOrderFragment")
+                McOrder.sendOrder()
+            }
         }
     }
 

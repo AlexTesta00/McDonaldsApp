@@ -10,6 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.mcdonalds.R
 import com.example.mcdonalds.model.McOrder
 import com.example.mcdonalds.model.McUser
+import com.example.mcdonalds.utils.MessageManager
+import com.example.mcdonalds.utils.Permission
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -36,20 +38,24 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        this.bindComponents()
-        this.setAllListener()
+        if(!Permission.checkNetworkIsEnabled(this@LoginActivity)){
+            MessageManager.displayNoNetworkEnabled(this@LoginActivity)
+        }else{
+            this.bindComponents()
+            this.setAllListener()
 
-        //Configure GoogleSignIn
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_id))
-            .requestEmail() //get user email
-            .build()
+            //Configure GoogleSignIn
+            val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_id))
+                .requestEmail() //get user email
+                .build()
 
-        googleSignInClient = GoogleSignIn.getClient(this@LoginActivity, googleSignInOptions)
+            googleSignInClient = GoogleSignIn.getClient(this@LoginActivity, googleSignInOptions)
 
-        //init firebase auth
-        firebaseAuth = FirebaseAuth.getInstance()
-        checkUser()
+            //init firebase auth
+            firebaseAuth = FirebaseAuth.getInstance()
+            checkUser()
+        }
     }
 
     private fun checkUser() {
@@ -73,8 +79,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setAllListener(){
         this.googleButton.setOnClickListener{
-            Log.d(TAG, "onCreate: GoogleSignIn")
-            singInResult.launch(Intent(googleSignInClient.signInIntent))
+            if(!Permission.checkNetworkIsEnabled(this@LoginActivity)){
+                MessageManager.displayNoNetworkEnabled(this@LoginActivity)
+            }else{
+                Log.d(TAG, "onCreate: GoogleSignIn")
+                singInResult.launch(Intent(googleSignInClient.signInIntent))
+            }
         }
     }
 

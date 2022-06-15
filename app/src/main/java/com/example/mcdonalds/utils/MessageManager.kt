@@ -124,5 +124,17 @@ class MessageManager {
                 .show()
         }
 
+        fun displayNoNetworkEnabled(activity: Activity){
+            AlertDialog.Builder(activity)
+                .setTitle("Il dispositivo non è connesso")
+                .setMessage("Il dispositivo non è connesso ad internet, vuoi abilitare la connessione?")
+                .setPositiveButton(R.string.confirm){ _, _ ->
+                    activity.startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+                }
+                .setNegativeButton(R.string.not_confirm){_,_ -> }
+                .setCancelable(false)
+                .show()
+        }
+
     }
 }
